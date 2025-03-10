@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/pickupLocationSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/editbox_background"
+            android:text="Select Pickup Location"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/dropLocationSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/editbox_background"
+            android:text="Select Drop Location"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/dateTimeSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@android:drawable/editbox_background"
+            android:text="Select Date and Time"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioGroup
+            android:id="@+id/tripTypeSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            <RadioButton 
+                android:id="@+id/oneWayTrip" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="One Way"
+                android:checked="true"/>
+            <RadioButton 
+                android:id="@+id/roundTrip" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Round Trip"/>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/errorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/carTypesList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/calculateFareButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Calculate Fare"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/bookNowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Book Now"/>
+
+        <!-- Modal for Fare Details -->
+        <FrameLayout
+            android:id="@+id/fareDetailsModal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="#80000000">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#FFFFFF"
+                android:orientation="vertical"
+                android:padding="16dp">
+                
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fare Details"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+                
+                <TextView
+                    android:id="@+id/baseFare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Base Fare: ₹0.00"/>
+                
+                <TextView
+                    android:id="@+id/distanceFare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Distance Fare: ₹0.00"/>
+                
+                <TextView
+                    android:id="@+id/timeFare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Time Fare: ₹0.00"/>
+                
+                <TextView
+                    android:id="@+id/totalFare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Fare: ₹0.00"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"/>
+                
+                <Button
+                    android:id="@+id/closeModalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Close"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</layout>
