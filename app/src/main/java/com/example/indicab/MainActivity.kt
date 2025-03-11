@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.indicab.navigation.NavDestination
+import com.example.indicab.ui.BookingScreen
 import com.example.indicab.ui.screens.*
 import com.example.indicab.ui.theme.IndiCabTheme
 
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(navController)
                         }
                         composable(NavDestination.BookRide.route) {
-                            BookRideScreen(navController)
+                            BookingScreen(navController)
                         }
                         composable(NavDestination.TrackRide.route) {
                             TrackRideScreen(navController)
