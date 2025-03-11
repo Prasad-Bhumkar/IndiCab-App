@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.indicab.utils.AnimationUtils
 import java.time.LocalDate
 import java.time.LocalTime
@@ -185,7 +187,42 @@ fun EnhancedDateTimePicker(
                             .toInstant(java.time.ZoneOffset.UTC)
                             .toEpochMilli()
                     ),
-                    showModeToggle = false
+                    showModeToggle = false,
+                    title = { Text("Select Date") }
+                )
+            }
+        }
+
+        // Time Picker Dialog
+        if (showTimePicker) {
+            TimePickerDialog(
+                onDismissRequest = {
+                    showTimePicker = false
+                    isTimeHovered = false
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showTimePicker = false
+                        isTimeHovered = false
+                    }) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showTimePicker = false
+                        isTimeHovered = false
+                    }) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                TimePicker(
+                    state = rememberTimePickerState(
+                        initialHour = selectedTime.hour,
+                        initialMinute = selectedTime.minute
+                    ),
+                    modifier = Modifier.padding(16.dp)
                 )
             }
         }

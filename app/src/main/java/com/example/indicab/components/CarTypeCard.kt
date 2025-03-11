@@ -10,10 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.indicab.utils.AnimationUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,123 +27,121 @@ fun EnhancedCarTypeCard(
     bags: Int,
     originalPrice: Double,
     discountedPrice: Double,
+    imageUrl: String,
     onSelect: () -> Unit,
     isSelected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var showDetails by remember { mutableStateOf(false) }
-
     Card(
         modifier = modifier
+            .fillMaxWidth()
             .then(AnimationUtils.cardSelectionModifier(isSelected)),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) 
                 MaterialTheme.colorScheme.primaryContainer 
             else 
                 MaterialTheme.colorScheme.surface
         ),
-        onClick = {
-            onSelect()
-            showDetails = !showDetails
-        }
+        onClick = onSelect
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Header
+            // Left section: Car image and details
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                // Car Image
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = carType,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+                
+                // Car Details
                 Column {
                     Text(
                         text = carType,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    AnimatedVisibility(
-                        visible = !showDetails,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                
-                // Price Section with Animation
-                Column(
-                    horizontalAlignment = Alignment.End
-                ) {
-                    Text(
-                        text = "₹${originalPrice.toInt()}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textDecoration = TextDecoration.LineThrough
-                    )
-                    Text(
-                        text = "₹${discountedPrice.toInt()}",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Save ₹${(originalPrice - discountedPrice).toInt()}",
+                        text = description,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.Green
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    
+                    // Capacity indicators
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Seats",
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = seats.toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Luggage,
+                                contentDescription = "Bags",
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = bags.toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
-
-            // Expandable Details
-            AnimatedVisibility(
-                visible = showDetails,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
+            
+            // Right section: Price
+            Column(
+                horizontalAlignment = Alignment.End
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                ) {
-                    // Capacity Info
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        CapacityInfo(
-                            icon = Icons.Default.Person,
-                            value = seats,
-                            label = "Seats"
-                        )
-                        CapacityInfo(
-                            icon = Icons.Default.Luggage,
-                            value = bags,
-                            label = "Bags"
-                        )
-                    }
-
-                    // Features
-                    Column(
-                        modifier = Modifier.padding(top = 16.dp)
-                    ) {
-                        Text(
-                            text = "Features:",
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text("• Air Conditioning")
-                        Text("• GPS Navigation")
-                        Text("• 24/7 Support")
-                    }
-                }
+                Text(
+                    text = "Save ₹${(originalPrice - discountedPrice).toInt()}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Green
+                )
+                Text(
+                    text = "₹${originalPrice.toInt()}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textDecoration = TextDecoration.LineThrough
+                )
+                Text(
+                    text = "₹${discountedPrice.toInt()}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

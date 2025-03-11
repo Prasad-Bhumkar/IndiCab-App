@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/fareDetailsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fare Details"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/baseFareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Base Fare:"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fareDetailsTitle" />
+
+    <TextView
+        android:id="@+id/baseFareValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$0.00"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/baseFareLabel" />
+
+    <TextView
+        android:id="@+id/distanceFareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance Fare:"
+        app:layout_constraintStart_toStartOf="@+id/baseFareLabel"
+        app:layout_constraintTop_toBottomOf="@+id/baseFareLabel"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/distanceFareValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$0.00"
+        app:layout_constraintEnd_toEndOf="@+id/baseFareValue"
+        app:layout_constraintTop_toTopOf="@+id/distanceFareLabel" />
+
+    <TextView
+        android:id="@+id/timeFareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time Fare:"
+        app:layout_constraintStart_toStartOf="@+id/distanceFareLabel"
+        app:layout_constraintTop_toBottomOf="@+id/distanceFareLabel"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/timeFareValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$0.00"
+        app:layout_constraintEnd_toEndOf="@+id/distanceFareValue"
+        app:layout_constraintTop_toTopOf="@+id/timeFareLabel" />
+
+    <TextView
+        android:id="@+id/totalFareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Fare:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/timeFareLabel"
+        app:layout_constraintTop_toBottomOf="@+id/timeFareLabel"
+        android:layout_marginTop="24dp"/>
+
+    <TextView
+        android:id="@+id/totalFareValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="$0.00"
+        android:layout_marginEnd="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeFareValue"/>
+
+    <Button
+        android:id="@+id/closeModalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalFareLabel"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

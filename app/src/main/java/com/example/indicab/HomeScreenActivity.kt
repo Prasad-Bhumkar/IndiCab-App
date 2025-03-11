@@ -1,29 +1,41 @@
 package com.example.indicab
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.indicab.adapters.CarTypesAdapter
-import com.example.indicab.api.BookingService
+import com.example.indicab.components.PlacesAutocomplete
+import com.example.indicab.components.EnhancedDateTimePicker
+import com.example.indicab.databinding.FareDetailsModalBinding
 import com.example.indicab.databinding.ActivityHomeScreenBinding
+import com.example.indicab.databinding.DateTimeSelectorDialogBinding
 import com.example.indicab.models.BookingRequest
 import com.example.indicab.models.CarType
+import com.example.indicab.models.LatLng
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import com.example.indicab.models.FareDetails
-import com.example.indicab.models.Location
 import com.example.indicab.viewmodels.HomeViewModel
-import java.text.SimpleDateFormat
 import java.util.Date
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class HomeScreenActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeScreenBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var carTypesAdapter: CarTypesAdapter
+     private lateinit var carTypesAdapter: CarTypesAdapter
     
     private var pickupLocation: Location? = null
     private var dropLocation: Location? = null
@@ -31,6 +43,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private var tripType: String = "ONE_WAY"
     private var selectedCar: CarType? = null
     private var fareDetails: FareDetails? = null
+    private var isPickup: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,46 +171,97 @@ class HomeScreenActivity : AppCompatActivity() {
     }
     
     private fun showLocationSelector(isPickup: Boolean) {
-        // Sample implementation - in a real app, you'd show a location picker
-        val locations = listOf(
-            Location("1", "Airport", "International Airport", 12.9716, 77.5946),
-            Location("2", "City Center", "Downtown", 12.9716, 77.5946),
-            Location("3", "Mall", "Shopping Center", 12.9716, 77.5946)
-        )
-        
-        val locationNames = locations.map { it.name }.toTypedArray()
-        
-        AlertDialog.Builder(this)
-            .setTitle(if (isPickup) "Select Pickup Location" else "Select Drop Location")
-            .setItems(locationNames) { _, which ->
-                val selectedLocation = locations[which]
-                if (isPickup) {
-                    pickupLocation = selectedLocation
-                    binding.pickupLocationSelector.text = selectedLocation.name
-                } else {
-                    dropLocation = selectedLocation
-                    binding.dropLocationSelector.text = selectedLocation.name
+        this.isPickup = isPickup
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(R.layout.location_selector_dialog)
+
+        val composeView: ComposeView = dialog.findViewById(R.id.compose_view)
+        composeView.setContent {
+            MaterialTheme {
+                Surface {
+                    PlacesAutocomplete(
+                        label = if (isPickup) "Select Pickup Location" else "Select Drop Location",
+                        onPlaceSelected = { place ->
+                            val location = Location(
+                                id = place.placeId,
+                                name = place.name,
+                                address = place.address,
+                                latitude = place.latLng.latitude,
+                                longitude = place.latLng.longitude
+                            )
+                            if (isPickup) pickupLocation = location else dropLocation = location
+                            if (isPickup) binding.pickupLocationSelector.text = location.name else binding.dropLocationSelector.text = location.name
+                            updateButtonStates()
+                            dialog.dismiss()
+                        }
+                    )
                 }
-                updateButtonStates()
             }
-            .show()
+        }
+        dialog.show()
     }
     
     private fun showDateTimePicker() {
-        // Sample implementation - in a real app, you'd use DatePickerDialog and TimePickerDialog
-        selectedDate = Date() // Current date/time
-        val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
+       val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogBinding = DateTimeSelectorDialogBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.dateTimeComposeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+            MaterialTheme {
+                    Surface {
+                      var selectedDate = this@HomeScreenActivity.selectedDate
+                        var selectedTime = LocalTime.now()
+
+                        EnhancedDateTimePicker(
+                                selectedDate = selectedDate,
+                                selectedTime = selectedTime,
+                                onDateSelected = { newDate ->
+                                    selectedDate = newDate
+                                    updateDateTimeSelectorText(selectedDate)
+                                    dialog.dismiss()
+                                },
+                                onTimeSelected = { newTime ->
+                                    selectedTime = newTime
+                                    updateDateTimeSelectorText(selectedDate)
+                                },
+                            )
+                        }
+                }
+            }
+        }
+        dialog.show()
+    }
+
+    private fun updateDateTimeSelectorText(selectedDate: Date){
+        val dateFormat = java.text.SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
         binding.dateTimeSelector.text = dateFormat.format(selectedDate)
     }
-    
+
+
     private fun showFareDetailsModal(fareDetails: FareDetails) {
-        binding.fareDetailsModal.visibility = View.VISIBLE
-        // Populate fare details in the modal
-        // In a real implementation, you'd set the values in the modal layout
-        
-        binding.closeModalButton.setOnClickListener {
-            binding.fareDetailsModal.visibility = View.GONE
+        val dialogBinding = FareDetailsModalBinding.inflate(layoutInflater)
+        dialogBinding.distanceFareValue.text = String.format("%.2f", fareDetails.distanceFare)
+        dialogBinding.timeFareValue.text = String.format("%.2f", fareDetails.timeFare)
+        dialogBinding.totalFareValue.text = String.format("%.2f", fareDetails.total)
+
+
+        dialogBinding.closeModalButton.setOnClickListener {
+           dialog.dismiss()
         }
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(dialogBinding.root)
+
+        }
+        dialog.show()
     }
     
     private fun navigateToBookingConfirmation(booking: BookingRequest) {
