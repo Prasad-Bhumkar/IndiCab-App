@@ -32,7 +32,8 @@ retrofit = "2.9.0"
 ucrop = "2.2.8"
 constraintlayout = "2.1.4"
 coilCompose = "2.6.0"
-google-services = "4.4.2"  # Added plugin version
+google-services = "4.4.2"
+uiAndroid = "1.7.8"  # Added plugin version
 
 [libraries]
 # AndroidX
@@ -64,6 +65,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
+androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

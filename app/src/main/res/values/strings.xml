@@ -1,3 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IndiCab</string>
+    
+    <!-- Home Screen -->
+    <string name="pickup_location_hint">Enter pickup location</string>
+    <string name="drop_location_hint">Enter drop location</string>
+    <string name="book_ride">Book Ride</string>
+    
+    <!-- Booking Screen -->
+    <string name="select_car_type">Select Car Type</string>
+    <string name="confirm_booking">Confirm Booking</string>
+    <string name="total_fare">Total Fare</string>
+    
+    <!-- Confirmation Screen -->
+    <string name="booking_confirmed">Booking Confirmed!</string>
+    <string name="booking_success_message">Your ride has been booked successfully. Driver details will be shared shortly.</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="booking_id">Booking ID</string>
+    <string name="estimated_pickup">Estimated Pickup</string>
+    <string name="payment_method">Payment Method</string>
 </resources>

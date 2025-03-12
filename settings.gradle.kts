@@ -4,13 +4,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-
-    // Enable version catalogs
-   // versionCatalogs {
-     //   create("libs") {
-       //     from(files("gradle/libs.versions.toml"))
-     //   }
-  //  }
 }
 
 dependencyResolutionManagement {
@@ -21,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Indicab"
+rootProject.name = "IndiCab"
 include(":app")

@@ -1,33 +1,29 @@
 package com.example.indicab.navigation
 
 sealed class NavDestinations(val route: String) {
+    // User Flow
     object Home : NavDestinations("home")
     object BookRide : NavDestinations("book_ride")
-    object TrackRide : NavDestinations("track_ride")
-    object Profile : NavDestinations("profile")
-    object MapView : NavDestinations("map_view")
-    object ScheduleRide : NavDestinations("schedule_ride/{bookingRequest}") {
-        fun createRoute(bookingRequestJson: String): String = 
-            route.replace("{bookingRequest}", bookingRequestJson)
-    }
     object Payment : NavDestinations("payment/{bookingId}/{amount}") {
         fun createRoute(bookingId: String?, amount: Double): String =
             "payment/${bookingId ?: "null"}/$amount"
     }
+    object TrackRide : NavDestinations("track_ride")
+
+    // Driver Flow
+    object DriverDashboard : NavDestinations("driver_dashboard")
+    object DriverRide : NavDestinations("driver_ride")
+    object DriverEarnings : NavDestinations("driver_earnings")
+    object DriverDocuments : NavDestinations("driver_documents")
+
+    // Common Features
     object Chat : NavDestinations("chat/{bookingId}") {
         fun createRoute(bookingId: String): String =
             route.replace("{bookingId}", bookingId)
     }
-    object Rating : NavDestinations("rating/{bookingId}/{toUserId}/{ratingType}") {
-        fun createRoute(
-            bookingId: String,
-            toUserId: String,
-            ratingType: String
-        ): String = "rating/$bookingId/$toUserId/$ratingType"
-    }
+    object ThemeSettings : NavDestinations("theme_settings")
     object Emergency : NavDestinations("emergency/{bookingId}") {
         fun createRoute(bookingId: String? = null): String =
             "emergency/${bookingId ?: "null"}"
     }
-    object ThemeSettings : NavDestinations("theme_settings")
 }

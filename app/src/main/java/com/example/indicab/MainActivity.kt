@@ -32,6 +32,10 @@ class MainActivity : ComponentActivity() {
                         composable(NavDestination.Home.route) {
                             HomeScreen(navController)
                         }
+                    composable(NavDestination.BookingConfirmation.route) { backStackEntry ->
+                        val fare = backStackEntry.arguments?.getString("fare")
+                        BookingConfirmationScreen(fare = fare, navController = navController)
+                    }
                         composable(NavDestination.BookRide.route) {
                             BookingScreen(navController)
                         }
