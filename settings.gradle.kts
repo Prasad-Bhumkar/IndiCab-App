@@ -1,25 +1,25 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
+
+    // Enable version catalogs
+   // versionCatalogs {
+     //   create("libs") {
+       //     from(files("gradle/libs.versions.toml"))
+     //   }
+  //  }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
     }
 }
 
-rootProject.name = "IndiCab"
+rootProject.name = "Indicab"
 include(":app")
- 

@@ -1,99 +1,89 @@
+// Load local.properties file for sensitive information like API keys
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+// Load properties if the file exists
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    // Apply necessary plugins for Android and Kotlin
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-    id("kotlin-kapt")
 }
 
 android {
+    // Set namespace for the application
     namespace = "com.example.indicab"
+
+    // Compile SDK version
     compileSdk = 34
-    buildToolsVersion = "35.0.0"
 
     defaultConfig {
+        // Use MAPS_API_KEY from local.properties if available
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
+
+        // Application ID
         applicationId = "com.example.indicab"
-        minSdk = 21
+
+        // Minimum and target SDK versions
+        minSdk = 24
         targetSdk = 34
+
+        // Version code and name
         versionCode = 1
         versionName = "1.0"
 
+        // Test instrumentation runner
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        
-        // Add the Maps API key from local.properties
-        val properties = org.jetbrains.kotlin.konan.properties.Properties()
-        val localPropertiesFile = project.rootProject.file("local.properties")
-        val mapsApiKey = if (localPropertiesFile.exists()) {
-            properties.load(localPropertiesFile.inputStream())
-            properties.getProperty("MAPS_API_KEY", "YOUR_API_KEY_HERE")
-        } else {
-            "YOUR_API_KEY_HERE"
-        }
-        
-        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
-        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
         release {
+            // Disable minification for now
             isMinifyEnabled = false
+
+            // ProGuard configuration
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
+    // Compile options for Java compatibility
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
+    // Kotlin options to match Java version
     kotlinOptions {
-        jvmTarget = "11"
-    }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-        viewBinding = true
-        dataBinding = true
+        jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.maps.android:maps-compose:4.3.3")
-    implementation("com.google.android.libraries.places:places:3.3.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
-    implementation("com.github.yalantis:ucrop:2.2.8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.2")
-    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
-    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
-    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    
+    // Material design components
+    implementation("com.google.android.material:material:1.11.0")
+
+    // Core KTX for Kotlin extensions
+    implementation("androidx.core:core-ktx:1.13.0")
+
+    // AppCompat for backward compatibility
+    implementation("androidx.appcompat:appcompat:1.7.0")
+
+    // Google Places API
+    implementation("com.google.android.libraries.places:places:3.4.0")
+
+    // Unit testing
     testImplementation("junit:junit:4.13.2")
+
+    // Instrumented tests
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
