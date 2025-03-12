@@ -6,11 +6,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.indicab.models.*
 import com.example.indicab.ui.screens.*
-import com.example.indicab.models.BookingRequest
 import com.google.gson.Gson
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
@@ -40,12 +39,6 @@ fun NavGraph(
             ProfileScreen(
                 navController = navController,
                 onMenuClick = onMenuClick
-            )
-        }
-
-        composable(NavDestinations.Payment.route) {
-            PaymentScreen(
-                navController = navController
             )
         }
 
@@ -84,6 +77,67 @@ fun NavGraph(
                     onBackPressed = { navController.popBackStack() }
                 )
             }
+        }
+
+        composable(
+            route = NavDestinations.Payment.route,
+            arguments = listOf(
+                navArgument("bookingId") { 
+                    type = NavType.String
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("amount") { type = NavType.FloatType }
+            )
+        ) { backStackEntry ->
+            val bookingId = backStackEntry.arguments?.getString("bookingId")?.takeIf { it != "null" }
+            val amount = backStackEntry.arguments?.getFloat("amount") ?: 0f
+            
+            PaymentScreen(
+                navController = navController,
+                bookingId = bookingId,
+                amount = amount.toDouble()
+            )
+        }
+
+        composable(
+            route = NavDestinations.Chat.route,
+            arguments = listOf(
+                navArgument("bookingId") { type = NavType.String }
+            )
+        ) { backStackEntry ->
+            val bookingId = backStackEntry.arguments?.getString("bookingId") ?: return@composable
+            
+            ChatScreen(
+                navController = navController,
+                bookingId = bookingId
+            )
+        }
+
+        composable(
+            route = NavDestinations.Rating.route,
+            arguments = listOf(
+                navArgument("bookingId") { type = NavType.String },
+                navArgument("toUserId") { type = NavType.String },
+                navArgument("ratingType") { type = NavType.String }
+            )
+        ) { backStackEntry ->
+            val bookingId = backStackEntry.arguments?.getString("bookingId") ?: return@composable
+            val toUserId = backStackEntry.arguments?.getString("toUserId") ?: return@composable
+            val ratingType = backStackEntry.arguments?.getString("ratingType")?.let {
+                try {
+                    RatingType.valueOf(it)
+                } catch (e: IllegalArgumentException) {
+                    null
+                }
+            } ?: return@composable
+
+            RatingScreen(
+                navController = navController,
+                bookingId = bookingId,
+                toUserId = toUserId,
+                ratingType = ratingType
+            )
         }
     }
 }

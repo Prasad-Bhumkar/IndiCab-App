@@ -7,28 +7,34 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.indicab.components.*
-import com.example.indicab.navigation.NavDestination
+import com.example.indicab.models.*
+import com.example.indicab.navigation.NavDestinations
 import com.example.indicab.utils.AnimationUtils
-import java.time.LocalDate
-import java.time.LocalTime
+import com.example.indicab.viewmodels.WaypointViewModel
+import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnhancedBookRideScreen(
+fun BookRideScreen(
     navController: NavController,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    waypointViewModel: WaypointViewModel = viewModel()
 ) {
     var selectedTripType by remember { mutableStateOf(TripType.ONEWAY) }
-    var pickupLocation by remember { mutableStateOf("") }
-    var dropLocation by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var selectedTime by remember { mutableStateOf(LocalTime.now()) }
     var selectedCarType by remember { mutableStateOf<Int?>(null) }
     var showFareDetails by remember { mutableStateOf(false) }
+    var showBookingOptions by remember { mutableStateOf(false) }
+
+    val waypoints by waypointViewModel.waypoints.collectAsState()
+    val routeState by waypointViewModel.routeState.collectAsState()
 
     val carTypes = listOf(
         Triple("Mini", "Swift, WagonR", Pair(4, 1)),
@@ -48,16 +54,45 @@ fun EnhancedBookRideScreen(
     }
 
     // Update booking button state
-    LaunchedEffect(pickupLocation, dropLocation, selectedCarType) {
-        isBookingEnabled = pickupLocation.isNotBlank() && 
-                          dropLocation.isNotBlank() && 
-                          selectedCarType != null
+    LaunchedEffect(waypoints, selectedCarType) {
+        isBookingEnabled = waypoints.size >= 2 && selectedCarType != null
+    }
+
+    // Initialize pickup and dropoff if waypoints is empty
+    LaunchedEffect(Unit) {
+        if (waypoints.isEmpty()) {
+            waypointViewModel.addWaypoint(
+                Location(address = ""),
+                WaypointType.PICKUP
+            )
+            waypointViewModel.addWaypoint(
+                Location(address = ""),
+                WaypointType.DROPOFF
+            )
+        }
+    }
+
+    fun createBookingRequest(): BookingRequest {
+        val route = (routeState as? RouteState.Success)?.route
+            ?: RouteWithWaypoints(waypoints = waypoints)
+            
+        return BookingRequest.fromRoute(
+            route = route,
+            carTypeId = selectedCarType?.toString() ?: "",
+            carType = selectedCarType?.let { carTypes[it].first } ?: "",
+            tripType = selectedTripType.name
+        )
     }
 
     Scaffold(
         topBar = {
-            AppTopBar(
-                onMenuClick = onMenuClick
+            TopAppBar(
+                title = { Text("Book Ride") },
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(Icons.Default.Menu, "Menu")
+                    }
+                }
             )
         },
         bottomBar = {
@@ -82,28 +117,24 @@ fun EnhancedBookRideScreen(
                         )
                         
                         Button(
-                            onClick = {
-                                if (selectedCarType != null) {
-                                    showFareDetails = true
-                                }
-                            },
+                            onClick = { showBookingOptions = true },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(56.dp)
                                 .then(AnimationUtils.buttonPressAnimation(isBookingEnabled)),
                             enabled = isBookingEnabled
                         ) {
-                            Text("Book Now")
+                            Text("Continue")
                         }
                     }
                 }
             }
         }
-    ) { paddingValues ->
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
                 .verticalScroll(scrollState)
         ) {
             // Trip Type Selector with Animation
@@ -114,29 +145,34 @@ fun EnhancedBookRideScreen(
                     fadeOut(animationSpec = tween(300))
                 }
             ) { tripType ->
-                EnhancedTripTypeSelector(
+                TripTypeSelector(
                     selectedType = tripType,
                     onTypeSelected = { selectedTripType = it },
                     modifier = Modifier.padding(16.dp)
                 )
             }
 
-            // Location Inputs
-            EnhancedLocationInput(
-                pickupLocation = pickupLocation,
-                dropLocation = dropLocation,
-                onPickupLocationChange = { pickupLocation = it },
-                onDropLocationChange = { dropLocation = it },
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            // Date Time Picker
-            EnhancedDateTimePicker(
-                selectedDate = selectedDate,
-                selectedTime = selectedTime,
-                onDateSelected = { selectedDate = it },
-                onTimeSelected = { selectedTime = it },
-                modifier = Modifier.padding(16.dp)
+            // Waypoint Manager
+            WaypointManager(
+                waypoints = waypoints,
+                onAddWaypoint = { location ->
+                    waypointViewModel.addWaypoint(location, WaypointType.STOP)
+                },
+                onRemoveWaypoint = { waypointId ->
+                    waypointViewModel.removeWaypoint(waypointId)
+                },
+                onReorderWaypoints = { waypointId, newOrder ->
+                    waypointViewModel.updateWaypointOrder(waypointId, newOrder)
+                },
+                onWaypointDetailsUpdate = { waypointId, duration, notes, scheduledArrival ->
+                    waypointViewModel.updateWaypointDetails(
+                        waypointId = waypointId,
+                        stopDuration = duration,
+                        notes = notes,
+                        scheduledArrival = scheduledArrival
+                    )
+                },
+                modifier = Modifier.padding(vertical = 16.dp)
             )
 
             // Car Type Cards with Animation
@@ -153,7 +189,7 @@ fun EnhancedBookRideScreen(
                         animationSpec = tween(300)
                     )
                 ) {
-                    EnhancedCarTypeCard(
+                    CarTypeCard(
                         carType = type,
                         description = description,
                         seats = capacity.first,
@@ -168,6 +204,50 @@ fun EnhancedBookRideScreen(
             }
         }
 
+        // Booking Options Dialog
+        if (showBookingOptions) {
+            AlertDialog(
+                onDismissRequest = { showBookingOptions = false },
+                title = { Text("Choose Booking Type") },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                showBookingOptions = false
+                                showFareDetails = true
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Book Now")
+                        }
+                        
+                        Button(
+                            onClick = {
+                                showBookingOptions = false
+                                val bookingRequest = createBookingRequest()
+                                val bookingRequestJson = Gson().toJson(bookingRequest)
+                                val encodedJson = URLEncoder.encode(bookingRequestJson, StandardCharsets.UTF_8.toString())
+                                navController.navigate(NavDestinations.ScheduleRide.createRoute(encodedJson))
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Schedule for Later")
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { showBookingOptions = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
+
         // Fare Details Modal
         if (showFareDetails && selectedCarType != null) {
             FareDetailsModal(
@@ -177,13 +257,14 @@ fun EnhancedBookRideScreen(
                 onDismiss = { showFareDetails = false },
                 onBook = {
                     showFareDetails = false
-                    navController.navigate(
-                        NavDestinationWithArguments.Payment.createRoute(
-                            prices[selectedCarType!!].second
-                        )
-                    )
+                    navController.navigate(NavDestinations.Payment.route)
                 }
             )
         }
     }
+}
+
+enum class TripType {
+    ONEWAY,
+    ROUND
 }
