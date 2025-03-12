@@ -71,19 +71,34 @@ dependencies {
     // Material design components
     implementation("com.google.android.material:material:1.11.0")
 
-    // Core KTX for Kotlin extensions
-    implementation("androidx.core:core-ktx:1.13.0")
+    // AndroidX Core and UI Components
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
-    // AppCompat for backward compatibility
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    // Google Maps and Location Services
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.libraries.places:places:3.3.0")
 
-    // Google Places API
-    implementation("com.google.android.libraries.places:places:3.4.0")
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
 
-    // Unit testing
+    // Coroutines for async programming
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    // Image Loading
+    implementation("io.coil-kt:coil:2.5.0")
+
+    // Testing
     testImplementation("junit:junit:4.13.2")
-
-    // Instrumented tests
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

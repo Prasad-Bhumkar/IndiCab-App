@@ -109,8 +109,27 @@ class HomeViewModel : ViewModel() {
                 _loading.value = true
                 _error.value = null
                 
-                // TODO: Implement fare calculation logic with the provided parameters
-                // For now, we'll create a dummy fare details
+                val selectedCarType = _carTypes.value?.find { it.id == carTypeId }
+                
+                if (selectedCarType == null) {
+                    _error.value = "Selected car type not found"
+                    return@launch
+                }
+                
+                // Placeholder values for distance and estimated time
+                val distance = 10.0 // Example distance in kilometers
+                val estimatedTime = "30 mins" // Example estimated time
+                
+                val fareDetails = FareDetails(
+                    baseFare = selectedCarType.basePrice,
+                    distanceFare = selectedCarType.pricePerKm * distance,
+                    totalFare = selectedCarType.basePrice + (selectedCarType.pricePerKm * distance),
+                    distance = distance,
+                    estimatedTime = estimatedTime,
+                    currency = "INR"
+                )
+                
+                _fareDetails.value = fareDetails
                 val selectedCarType = _carTypes.value?.find { it.id == carTypeId }
                 
                 if (selectedCarType == null) {
@@ -142,8 +161,15 @@ class HomeViewModel : ViewModel() {
                 _loading.value = true
                 _error.value = null
                 
-                // TODO: Implement booking creation logic with the provided request
-                // For now, we'll just return the booking request
+                // Simulate booking creation logic
+                _bookingCreated.value = bookingRequest
+                // In a real application, you would call the BookingService to create the booking
+                // val response = bookingService.createBooking(bookingRequest)
+                // if (response.isSuccessful) {
+                //     _bookingCreated.value = response.body()
+                // } else {
+                //     _error.value = response.errorBody()?.string()
+                // }
                 _bookingCreated.value = bookingRequest
             } catch (e: Exception) {
                 _error.value = "An error occurred while creating booking: ${e.message}"
