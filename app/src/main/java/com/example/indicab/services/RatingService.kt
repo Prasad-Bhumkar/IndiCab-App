@@ -27,6 +27,7 @@ class RatingService @Inject constructor(
     }
 
     private fun initializeDefaultTags() {
+        // TODO: Check if default rating tags already exist before insertion; implement initialization logic accordingly.
         serviceScope.launch {
             DefaultRatingTags.POSITIVE_TAGS.forEach { tag ->
                 tagDao.insertTag(tag)
@@ -38,12 +39,14 @@ class RatingService @Inject constructor(
     }
 
     private fun monitorExpiredPrompts() {
+        // TODO: Implement logic to monitor rating prompts, remove or mark expired ones, and notify users accordingly.
         serviceScope.launch {
             // Monitor and handle expired prompts
         }
     }
 
     suspend fun submitRating(
+        // TODO: Validate rating data (score, review text, and tags) for proper format and acceptable ranges prior to submission.
         bookingId: String,
         fromUserId: String,
         toUserId: String,
@@ -83,6 +86,7 @@ class RatingService @Inject constructor(
     }
 
     suspend fun createRatingPrompt(
+        // TODO: Validate bookingId and userId to ensure they are valid before creating a rating prompt.
         bookingId: String,
         userId: String,
         promptType: RatingPromptType
@@ -97,6 +101,7 @@ class RatingService @Inject constructor(
     }
 
     suspend fun reportRating(
+        // TODO: Add validation for report reason and description; ensure they are not empty and meet criteria.
         ratingId: String,
         reportedBy: String,
         reason: String,
@@ -113,6 +118,7 @@ class RatingService @Inject constructor(
     }
 
     suspend fun moderateReport(
+        // TODO: Verify the existence of the report before moderating; handle missing report scenario gracefully.
         reportId: String,
         moderatorId: String,
         status: ReportStatus,
@@ -127,6 +133,7 @@ class RatingService @Inject constructor(
     }
 
     suspend fun getRatingSummary(userId: String): RatingSummary {
+        // TODO: Handle empty rating sets and log warning if no ratings are found.
         val stats = statsDao.getRatingStats(userId).firstOrNull()
         val recentRating = ratingDao.getRatingsForUser(userId)
             .firstOrNull()
@@ -142,6 +149,7 @@ class RatingService @Inject constructor(
     }
 
     fun getRatingAnalytics(
+        // TODO: Add error handling for analytics calculation failures and unexpected data formats.
         userId: String,
         period: AnalyticsPeriod
     ): Flow<RatingAnalytics> = flow {

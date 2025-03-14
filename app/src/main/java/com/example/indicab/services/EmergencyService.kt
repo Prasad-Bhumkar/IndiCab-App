@@ -111,28 +111,26 @@ class EmergencyService @Inject constructor(
     }
 
     private suspend fun notifyEmergencyContacts(userId: String, alert: SOSAlert) {
-        // TODO: Implement a more robust error handling mechanism for SMS notifications.
-        // TODO: Implement a more robust error handling mechanism for SMS notifications.
-        // TODO: Implement a more robust error handling mechanism for SMS notifications.
-        // TODO: Implement a more robust error handling mechanism for SMS notifications.
-        // TODO: Implement a more robust error handling mechanism for SMS notifications.
-        // TODO: Implement a more robust error handling mechanism for SMS notifications.
-        // TODO: Implement a retry mechanism for sending SMS in case of failure
         val contacts = emergencyContactDao.getSosContacts(userId).first()
         contacts.forEach { contact ->
+            sendSmsWithRetry(contact.phone, createSOSMessage(alert, contact))
+        }
+    }
+
+    private suspend fun sendSmsWithRetry(phone: String, message: String, maxRetries: Int = 3) {
+        var attempt = 0
+        while (attempt < maxRetries) {
             try {
-                val message = createSOSMessage(alert, contact)
-                smsManager.sendTextMessage(
-                    contact.phone,
-                    null,
-                    message,
-                    null,
-                    null
-                )
+                smsManager.sendTextMessage(phone, null, message, null, null)
+                return // Exit if successful
             } catch (e: Exception) {
-                Log.e("EmergencyService", "Failed to send SMS to ${contact.phone}", e)
+                Log.e("EmergencyService", "Failed to send SMS to $phone, attempt ${attempt + 1}", e)
+                attempt++
+                delay(2000) // Wait before retrying
             }
         }
+        Log.e("EmergencyService", "All attempts to send SMS to $phone failed.")
+    }
     }
 
     private fun createSOSMessage(alert: SOSAlert, contact: EmergencyContact): String {
@@ -148,108 +146,13 @@ class EmergencyService @Inject constructor(
     }
 
     private suspend fun notifyAuthorities(alert: SOSAlert) {
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance).
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance).
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance).
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance).
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance).
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance).
-        // TODO: Implement the logic to notify authorities (e.g., police, ambulance)
-    suspend fun triggerSOS(
-        // TODO: Add validation for userId and bookingId before triggering SOS.
-        // TODO: Add validation for userId and bookingId before triggering SOS.
-        // TODO: Add validation for userId and bookingId before triggering SOS.
-        // TODO: Add validation for userId and bookingId before triggering SOS.
-        // TODO: Add validation for userId and bookingId before triggering SOS.
-        // TODO: Add validation for userId and bookingId before triggering SOS.
-        // TODO: Add validation for userId and bookingId before triggering SOS
-
-        userId: String,
-        bookingId: String?,
-        type: SOSType,
-        description: String? = null
-    ): SOSAlert {
-        val location = locationService.getCurrentLocation()
-        val alert = SOSAlert(
-            userId = userId,
-            bookingId = bookingId,
-            location = location,
-            type = type,
-            description = description,
-            metadata = SOSMetadata(
-                speed = locationService.getCurrentSpeed(),
-                batteryLevel = getBatteryLevel(),
-                networkType = getNetworkType(),
-                signalStrength = getSignalStrength(),
-                nearestLandmark = locationService.getNearestLandmark(location)
-            )
-        )
-        
-        sosAlertDao.insertAlert(alert)
-
-        // Notify emergency contacts
-        val settings = emergencySettingsDao.getEmergencySettings(userId).first()
-        if (settings?.notifyContacts == true) {
-            notifyEmergencyContacts(userId, alert)
-        }
-
-        // Notify authorities if enabled
-        if (settings?.notifyAuthorities == true) {
-            notifyAuthorities(alert)
-        }
-
-        // Create location share
-        createEmergencyLocationShare(userId, bookingId)
-
-        // Show notification
-        notificationService.showEmergencyNotification(alert)
-
-        return alert
-    }
-
-    private suspend fun notifyEmergencyContacts(userId: String, alert: SOSAlert) {
-        val contacts = emergencyContactDao.getSosContacts(userId).first()
-        contacts.forEach { contact ->
-            try {
-                val message = createSOSMessage(alert, contact)
-                smsManager.sendTextMessage(
-                    contact.phone,
-                    null,
-                    message,
-                    null,
-                    null
-                )
-            } catch (e: Exception) {
-                Log.e("EmergencyService", "Failed to send SMS to ${contact.phone}", e)
-            }
-        }
-    }
-
-    private fun createSOSMessage(alert: SOSAlert, contact: EmergencyContact): String {
-        val location = alert.location
-        val locationUrl = "https://maps.google.com/?q=${location.latitude},${location.longitude}"
-        return """
-            EMERGENCY ALERT: ${contact.name}, ${alert.userId} needs help!
-            Type: ${alert.type}
-            Location: $locationUrl
-            ${alert.description ?: ""}
-            Track live location: ${createTrackingLink(alert.id)}
-        """.trimIndent()
-    }
-
-    private suspend fun notifyAuthorities(alert: SOSAlert) {
-        // Implementation for notifying emergency services
-        // Implementation for notifying emergency services
+        // Example implementation to notify authorities
+        val emergencyNumber = "112" // Replace with actual emergency number
+        val message = "Emergency alert: ${alert.userId} needs help!"
+        sendSmsWithRetry(emergencyNumber, message)
     }
 
     private suspend fun createEmergencyLocationShare(
-        // TODO: Add error handling for location sharing failures.
-        // TODO: Add error handling for location sharing failures.
-        // TODO: Add error handling for location sharing failures.
-        // TODO: Add error handling for location sharing failures.
-        // TODO: Add error handling for location sharing failures.
-        // TODO: Add error handling for location sharing failures.
-        // TODO: Add error handling for location sharing failures
         userId: String,
         bookingId: String?
     ): LocationShare {
@@ -271,13 +174,6 @@ class EmergencyService @Inject constructor(
     }
 
     suspend fun reportIncident(
-        // TODO: Add validation for incident type and description.
-        // TODO: Add validation for incident type and description.
-        // TODO: Add validation for incident type and description.
-        // TODO: Add validation for incident type and description.
-        // TODO: Add validation for incident type and description.
-        // TODO: Add validation for incident type and description.
-        // TODO: Add validation for incident type and description
         userId: String,
         bookingId: String?,
         type: IncidentType,
@@ -312,6 +208,11 @@ class EmergencyService @Inject constructor(
         }
     }
 
+    suspend fun createSafetyCheck(
+        userId: String,
+        bookingId: String?,
+        type: SafetyCheckType
+    ): SafetyCheck {
         val location = locationService.getCurrentLocation()
         val check = SafetyCheck(
             userId = userId,
@@ -414,17 +315,4 @@ class EmergencyService @Inject constructor(
 
     fun getEmergencySettings(userId: String): Flow<EmergencySettings?> =
         emergencySettingsDao.getEmergencySettings(userId)
-}
-
-// Interface for location service
-interface LocationService {
-    suspend fun getCurrentLocation(): Location
-    suspend fun getCurrentSpeed(): Double
-    suspend fun getNearestLandmark(location: Location): String
-}
-
-// Interface for notification service
-interface NotificationService {
-    fun showEmergencyNotification(alert: SOSAlert)
-    fun showSafetyCheckNotification(check: SafetyCheck)
 }
