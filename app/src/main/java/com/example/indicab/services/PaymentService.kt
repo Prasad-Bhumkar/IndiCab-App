@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 import android.util.Log
+import com.example.indicab.analytics.AnalyticsManager
 
 @Singleton
 class PaymentService @Inject constructor(
@@ -18,10 +19,16 @@ class PaymentService @Inject constructor(
     private val walletDao: WalletDao,
     private val paymentGateway: PaymentGateway
 ) {
+    private val maxRetries = 3
+    private val retryDelay = 2000L
+
     suspend fun processPayment(request: PaymentRequest): PaymentGatewayResponse {
-        // Validate payment method details
+        AnalyticsManager.logEvent("payment_processing", mapOf("userId" to request.userId, "amount" to request.amount.toString()))
+        Log.d("PaymentService", "Processing payment for userId=${request.userId}, bookingId=${request.bookingId}, amount=${request.amount}")
+
         if (request.paymentMethodId.isEmpty() || request.amount <= 0) {
             return PaymentGatewayResponse(
+                errorCode = "INVALID_PAYMENT_METHOD",
                 success = false,
                 transactionId = null,
                 amount = request.amount,
@@ -30,112 +37,40 @@ class PaymentService @Inject constructor(
                 errorMessage = "Invalid payment method details."
             )
         }
-        
-        // TODO: Implement a retry mechanism for failed payments
-        var attempt = 0
-        val maxRetries = 3
-        while (attempt < maxRetries) {
-            try {
-                // Create initial transaction record
-                val transaction = Transaction(
-                    userId = request.userId,
-                    bookingId = request.bookingId,
-                    amount = request.amount,
-                    currency = request.currency,
-                    type = TransactionType.PAYMENT,
-                    status = TransactionStatus.PENDING,
-                    paymentMethodId = request.paymentMethodId
-                )
-                transactionDao.insertTransaction(transaction)
 
-                // Process payment through gateway
-                val response = when (request.paymentMethod.type) {
-                    PaymentMethodType.WALLET -> processWalletPayment(request)
-                    else -> paymentGateway.processPayment(request)
-                }
-
-                // Update transaction with gateway response
-                transactionDao.updateTransactionStatus(
-                    transactionId = transaction.id,
-                    status = response.status,
-                    metadata = TransactionMetadata(
-                        gatewayTransactionId = response.transactionId,
-                        gatewayResponse = response.toString()
-                    )
-                )
-
-                // Handle split payments if applicable
-                if (request.isSplitPayment && request.splitDetails != null) {
-                    processSplitPayment(request, response)
-                }
-
-                return response // Exit if successful
-            } catch (e: Exception) {
-                Log.e("PaymentService", "Payment processing failed for userId=${request.userId}, bookingId=${request.bookingId}: ${e.message}", e)
-                attempt++
-                delay(2000) // Wait before retrying
-            }
-        }
-        return PaymentGatewayResponse(
-            success = false,
-            transactionId = null,
+        val transaction = Transaction(
+            userId = request.userId,
+            bookingId = request.bookingId,
             amount = request.amount,
             currency = request.currency,
-            status = TransactionStatus.FAILED,
-            errorMessage = "Payment processing failed after $maxRetries attempts."
+            type = TransactionType.PAYMENT,
+            status = TransactionStatus.PENDING,
+            paymentMethodId = request.paymentMethodId
         )
-        Log.d("PaymentService", "Processing payment for userId=${request.userId}, bookingId=${request.bookingId}, amount=${request.amount}")
-        return try {
-            // Create initial transaction record
-            val transaction = Transaction(
-                userId = request.userId,
-                bookingId = request.bookingId,
-                amount = request.amount,
-                currency = request.currency,
-                type = TransactionType.PAYMENT,
-                status = TransactionStatus.PENDING,
-                paymentMethodId = request.paymentMethodId
-            )
-            transactionDao.insertTransaction(transaction)
+        transactionDao.insertTransaction(transaction)
 
-            // Process payment through gateway
-            val response = when (request.paymentMethod.type) {
-                PaymentMethodType.WALLET -> processWalletPayment(request)
-                else -> paymentGateway.processPayment(request)
-            }
-
-            // Update transaction with gateway response
-            transactionDao.updateTransactionStatus(
-                transactionId = transaction.id,
-                status = response.status,
-                metadata = TransactionMetadata(
-                    gatewayTransactionId = response.transactionId,
-                    gatewayResponse = response.toString()
-                )
-            )
-
-            // Handle split payments if applicable
-            if (request.isSplitPayment && request.splitDetails != null) {
-                processSplitPayment(request, response)
-            }
-
-            response
-        } catch (e: Exception) {
-            Log.e("PaymentService", "Payment processing failed for userId=${request.userId}, bookingId=${request.bookingId}: ${e.message}", e)
-            PaymentGatewayResponse(
-                success = false,
-                transactionId = null,
-                amount = request.amount,
-                currency = request.currency,
-                status = TransactionStatus.FAILED,
-                errorMessage = e.message
-            )
+        val response = when (request.paymentMethod.type) {
+            PaymentMethodType.WALLET -> processWalletPayment(request)
+            else -> paymentGateway.processPayment(request)
         }
+
+        transactionDao.updateTransactionStatus(
+            transactionId = transaction.id,
+            status = response.status,
+            metadata = TransactionMetadata(
+                gatewayTransactionId = response.transactionId,
+                gatewayResponse = response.toString()
+            )
+        )
+
+        if (request.isSplitPayment && request.splitDetails != null) {
+            processSplitPayment(request, response)
+        }
+
+        return response
     }
 
     private suspend fun processWalletPayment(request: PaymentRequest): PaymentGatewayResponse {
-        // TODO: Consider adding a feature to allow users to set up recurring payments
-        // Placeholder for future implementation
         val wallet = walletDao.getWallet(request.userId).first()
         Log.d("PaymentService", "Processing wallet payment for userId=${request.userId}, amount=${request.amount}, currentBalance=${wallet?.balance}")
         return if (wallet != null && wallet.balance >= request.amount) {
@@ -182,11 +117,6 @@ class PaymentService @Inject constructor(
     }
 
     suspend fun processRefund(
-        // Implement a logging mechanism to track the history of payment transactions
-        logPaymentTransaction(transaction: Transaction) {
-            // Log transaction details to a file or monitoring system
-            Log.d("PaymentService", "Transaction logged: $transaction")
-        }
         transactionId: String,
         amount: Double,
         reason: String
@@ -199,7 +129,6 @@ class PaymentService @Inject constructor(
                 amount = amount
             )
 
-            // Create refund transaction
             val refundTransaction = Transaction(
                 userId = transaction.userId,
                 bookingId = transaction.bookingId,
@@ -216,7 +145,6 @@ class PaymentService @Inject constructor(
             )
             transactionDao.insertTransaction(refundTransaction)
 
-            // If it was a wallet payment, refund to wallet
             if (transaction.paymentMethod.type == PaymentMethodType.WALLET) {
                 walletDao.updateBalance(transaction.userId, amount)
             }

@@ -35,5 +35,6 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.44")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0") // Add Kotlin standard library
 
-    // Other dependencies...
+    implementation("com.example.paymentgateway:payment-sdk:1.0.0") // Payment SDK dependency
+    implementation("com.squareup.okhttp3:okhttp:4.9.1") // Example security library
 }

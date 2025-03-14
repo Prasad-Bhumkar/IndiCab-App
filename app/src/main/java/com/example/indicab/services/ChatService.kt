@@ -47,6 +47,7 @@ class ChatService @Inject constructor(
         serviceScope.launch {
             chatSocket.incomingMessages.collect { message ->
                 handleIncomingMessage(message)
+                Log.d("ChatService", "Incoming message received: ${message.content} from ${message.senderId}")
             }
         }
     }
@@ -96,12 +97,14 @@ class ChatService @Inject constructor(
     }
 
     suspend fun sendMessage(
+        // Validate message content before sending
         chatRoomId: String,
         senderId: String,
         content: String,
         type: MessageType = MessageType.TEXT,
         metadata: MessageMetadata? = null
     ): Message {
+        // Create message object
         val message = Message(
             chatRoomId = chatRoomId,
             senderId = senderId,
@@ -112,8 +115,9 @@ class ChatService @Inject constructor(
         messageDao.insertMessage(message)
 
         try {
+            // Attempt to send the message through the socket
             chatSocket.sendMessage(message)
-            messageDao.updateMessageStatus(message.id, MessageStatus.SENT)
+                messageDao.updateMessageStatus(message.id, MessageStatus.SENT)
             updateChatRoomLastMessage(chatRoomId, content)
             Log.d("ChatService", "Message sent: $content in chatRoomId=$chatRoomId")
         } catch (e: Exception) {
@@ -122,6 +126,7 @@ class ChatService @Inject constructor(
             throw e
         }
 
+        // Return the message object after sending
         return message
     }
 

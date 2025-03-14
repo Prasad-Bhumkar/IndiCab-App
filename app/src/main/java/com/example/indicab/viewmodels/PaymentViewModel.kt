@@ -62,9 +62,13 @@ class PaymentViewModel(
                 )
 
                 val response = paymentService.processPayment(request)
+                // Log the payment processing event
+                AnalyticsManager.logEvent("payment_processing", mapOf("userId" to request.userId, "amount" to request.amount.toString()))
                 
                 _paymentState.value = if (response.success) {
                     PaymentState.Success(response)
+                    // Log the payment result
+                    AnalyticsManager.logEvent("payment_result", mapOf("userId" to request.userId, "success" to response.success.toString()))
                 } else {
                     PaymentState.Error(
                         response.errorMessage ?: "Payment failed",
@@ -73,6 +77,11 @@ class PaymentViewModel(
                 }
             } catch (e: Exception) {
                 _paymentState.value = PaymentState.Error(
+                    e.message ?: "Payment failed",
+                    "UNKNOWN_ERROR"
+                )
+                // Log the payment failure
+                AnalyticsManager.logEvent("payment_failed", mapOf("userId" to userId, "error" to e.message ?: "Unknown error"))
                     e.message ?: "Payment failed",
                     "UNKNOWN_ERROR"
                 )

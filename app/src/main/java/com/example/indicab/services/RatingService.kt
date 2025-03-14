@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import android.util.Log
 
 @Singleton
 class RatingService @Inject constructor(
@@ -27,7 +28,6 @@ class RatingService @Inject constructor(
     }
 
     private fun initializeDefaultTags() {
-        // TODO: Check if default rating tags already exist before insertion; implement initialization logic accordingly.
         serviceScope.launch {
             DefaultRatingTags.POSITIVE_TAGS.forEach { tag ->
                 tagDao.insertTag(tag)
@@ -39,14 +39,12 @@ class RatingService @Inject constructor(
     }
 
     private fun monitorExpiredPrompts() {
-        // TODO: Implement logic to monitor rating prompts, remove or mark expired ones, and notify users accordingly.
         serviceScope.launch {
-            // Monitor and handle expired prompts
+            // TODO: Implement logic to monitor and handle expired rating prompts (e.g., automatically mark prompts as expired and notify users).
         }
     }
 
     suspend fun submitRating(
-        // TODO: Validate rating data (score, review text, and tags) for proper format and acceptable ranges prior to submission.
         bookingId: String,
         fromUserId: String,
         toUserId: String,
@@ -55,7 +53,13 @@ class RatingService @Inject constructor(
         review: String? = null,
         tags: List<String> = emptyList()
     ): Rating {
-        // Create and save the rating
+        require(score in 1.0..5.0) { "Score must be between 1 and 5." }
+        require(tags.all { it.isNotBlank() }) { "Tags cannot be empty." }
+        require(bookingId.isNotBlank()) { "Booking ID cannot be empty." }
+        require(fromUserId.isNotBlank()) { "From User ID cannot be empty." }
+        require(toUserId.isNotBlank()) { "To User ID cannot be empty." }
+        // TODO: Enhance validation logic (e.g., check for duplicate ratings) before inserting a new rating.
+
         val rating = Rating(
             bookingId = bookingId,
             fromUserId = fromUserId,
@@ -67,15 +71,12 @@ class RatingService @Inject constructor(
         )
         ratingDao.insertRating(rating)
 
-        // Update rating stats
         statsDao.updateRatingStats(toUserId, rating)
 
-        // Update tag usage counts
         tags.forEach { tagId ->
             tagDao.incrementTagUsage(tagId)
         }
 
-        // Mark rating prompt as completed
         promptDao.updatePromptStatusForBooking(
             bookingId = bookingId,
             userId = fromUserId,
@@ -86,11 +87,14 @@ class RatingService @Inject constructor(
     }
 
     suspend fun createRatingPrompt(
-        // TODO: Validate bookingId and userId to ensure they are valid before creating a rating prompt.
         bookingId: String,
         userId: String,
         promptType: RatingPromptType
     ): RatingPrompt {
+        require(bookingId.isNotBlank()) { "Booking ID cannot be empty." }
+        require(userId.isNotBlank()) { "User ID cannot be empty." }
+        // TODO: Validate prompt data and ensure all required fields are present before insertion.
+
         val prompt = RatingPrompt(
             bookingId = bookingId,
             userId = userId,
@@ -101,12 +105,15 @@ class RatingService @Inject constructor(
     }
 
     suspend fun reportRating(
-        // TODO: Add validation for report reason and description; ensure they are not empty and meet criteria.
         ratingId: String,
         reportedBy: String,
         reason: String,
         description: String? = null
     ): RatingReport {
+        require(reason.isNotBlank()) { "Reason cannot be empty." }
+        require(description?.isNotBlank() ?: true) { "Description cannot be empty." }
+        // TODO: Add error handling to verify that the rating exists before reporting; handle invalid rating IDs.
+
         val report = RatingReport(
             ratingId = ratingId,
             reportedBy = reportedBy,
@@ -118,12 +125,13 @@ class RatingService @Inject constructor(
     }
 
     suspend fun moderateReport(
-        // TODO: Verify the existence of the report before moderating; handle missing report scenario gracefully.
         reportId: String,
         moderatorId: String,
         status: ReportStatus,
         notes: String? = null
     ) {
+        require(reportId.isNotBlank()) { "Report ID cannot be empty." }
+        // TODO: Validate the presence and current state of the report before processing moderation actions.
         reportDao.updateReportStatus(
             reportId = reportId,
             status = status,
@@ -133,136 +141,78 @@ class RatingService @Inject constructor(
     }
 
     suspend fun getRatingSummary(userId: String): RatingSummary {
-        // TODO: Handle empty rating sets and log warning if no ratings are found.
-        val stats = statsDao.getRatingStats(userId).firstOrNull()
+        val stats = statsDao.getRatingStats(userId).firstOrNull() ?: run {
+            Log.w("RatingService", "No rating stats found for userId=$userId")
+            // TODO: Log detailed information when no rating stats are returned to aid in debugging and monitoring.
+            return RatingSummary(userId, 0f, 0, null, emptyList())
+        }
         val recentRating = ratingDao.getRatingsForUser(userId)
             .firstOrNull()
             ?.firstOrNull()
 
         return RatingSummary(
             userId = userId,
-            averageRating = stats?.averageRating ?: 0f,
-            totalRatings = stats?.totalRatings ?: 0,
+            averageRating = stats.averageRating,
+            totalRatings = stats.totalRatings,
             recentRating = recentRating,
-            topTags = stats?.commonTags ?: emptyList()
+            topTags = stats.commonTags
         )
     }
 
     fun getRatingAnalytics(
-        // TODO: Add error handling for analytics calculation failures and unexpected data formats.
         userId: String,
         period: AnalyticsPeriod
     ): Flow<RatingAnalytics> = flow {
-        // Calculate start and end dates based on period
+        require(userId.isNotBlank()) { "User ID cannot be empty." }
+
         val now = LocalDateTime.now()
         val (startDate, endDate) = when (period) {
-            AnalyticsPeriod.DAILY -> Pair(
-                now.minusDays(1),
-                now
-            )
-            AnalyticsPeriod.WEEKLY -> Pair(
-                now.minusWeeks(1),
-                now
-            )
-            AnalyticsPeriod.MONTHLY -> Pair(
-                now.minusMonths(1),
-                now
-            )
-            AnalyticsPeriod.YEARLY -> Pair(
-                now.minusYears(1),
-                now
-            )
-            AnalyticsPeriod.ALL_TIME -> Pair(
-                LocalDateTime.MIN,
-                now
-            )
+            AnalyticsPeriod.DAILY -> Pair(now.minusDays(1), now)
+            AnalyticsPeriod.WEEKLY -> Pair(now.minusWeeks(1), now)
+            AnalyticsPeriod.MONTHLY -> Pair(now.minusMonths(1), now)
+            AnalyticsPeriod.YEARLY -> Pair(now.minusYears(1), now)
+            AnalyticsPeriod.ALL_TIME -> Pair(LocalDateTime.MIN, now)
         }
 
-        // Collect ratings for the period
         val ratings = ratingDao.getRatingsForUser(userId)
             .firstOrNull()
             ?.filter { it.createdAt in startDate..endDate }
             ?: emptyList()
 
         if (ratings.isEmpty()) {
-            emit(
-                RatingAnalytics(
-                    userId = userId,
-                    period = period,
-                    averageRating = 0f,
-                    ratingTrend = 0f,
-                    totalRatings = 0,
-                    topTags = emptyList(),
-                    improvementAreas = emptyList()
-                )
-            )
+            emit(RatingAnalytics(userId, period, 0f, 0f, 0, emptyList(), emptyList()))
             return@flow
         }
 
-        // Calculate analytics
         val averageRating = ratings.map { it.score }.average().toFloat()
-        
-        // Calculate trend (compare with previous period)
         val previousPeriodRatings = ratingDao.getRatingsForUser(userId)
             .firstOrNull()
             ?.filter {
                 it.createdAt in startDate.minus(period.toDuration())..endDate.minus(period.toDuration())
             }
             ?: emptyList()
-        
-        val previousAverage = previousPeriodRatings
-            .takeIf { it.isNotEmpty() }
+
+        val previousAverage = previousPeriodRatings.takeIf { it.isNotEmpty() }
             ?.map { it.score }
             ?.average()
-            ?.toFloat()
-            ?: averageRating
-        
+            ?.toFloat() ?: averageRating
+
         val trend = averageRating - previousAverage
 
-        // Analyze tags
-        val tagCounts = ratings
-            .flatMap { it.tags }
-            .groupBy { it }
-            .mapValues { it.value.size }
-
+        val tagCounts = ratings.flatMap { it.tags }.groupBy { it }.mapValues { it.value.size }
         val totalTags = tagCounts.values.sum().toFloat()
-        
-        val topTags = tagCounts
-            .map { (tag, count) ->
-                TagCount(
-                    tag = tag,
-                    count = count,
-                    percentage = count / totalTags * 100
-                )
-            }
-            .sortedByDescending { it.count }
-            .take(5)
 
-        val improvementAreas = tagCounts
-            .filter { (tag, _) ->
-                DefaultRatingTags.NEGATIVE_TAGS.any { it.text == tag }
-            }
-            .map { (tag, count) ->
-                TagCount(
-                    tag = tag,
-                    count = count,
-                    percentage = count / totalTags * 100
-                )
-            }
-            .sortedByDescending { it.count }
-            .take(3)
+        val topTags = tagCounts.map { (tag, count) ->
+            TagCount(tag, count, count / totalTags * 100)
+        }.sortedByDescending { it.count }.take(5)
 
-        emit(
-            RatingAnalytics(
-                userId = userId,
-                period = period,
-                averageRating = averageRating,
-                ratingTrend = trend,
-                totalRatings = ratings.size,
-                topTags = topTags,
-                improvementAreas = improvementAreas
-            )
-        )
+        val improvementAreas = tagCounts.filter { (tag, _) ->
+            DefaultRatingTags.NEGATIVE_TAGS.any { it.text == tag }
+        }.map { (tag, count) ->
+            TagCount(tag, count, count / totalTags * 100)
+        }.sortedByDescending { it.count }.take(3)
+
+        emit(RatingAnalytics(userId, period, averageRating, trend, ratings.size, topTags, improvementAreas))
     }
 
     private fun AnalyticsPeriod.toDuration() = when (this) {

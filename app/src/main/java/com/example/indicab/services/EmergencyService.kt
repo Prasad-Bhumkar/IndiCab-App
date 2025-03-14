@@ -275,6 +275,150 @@ class EmergencyService @Inject constructor(
     }
 
     private fun getBatteryLevel(): Int {
+        // TODO: Implement proper logic to retrieve the device’s battery level using Android APIs.
+        return 100
+    }
+
+    private fun getNetworkType(): String {
+        // TODO: Replace placeholder with actual logic to determine network type (e.g., using ConnectivityManager).
+        return "4G"
+    }
+
+    private fun getSignalStrength(): Int {
+        // TODO: Implement method to correctly retrieve signal strength using TelephonyManager or equivalent.
+        return 4
+    }
+    private suspend fun notifyAuthorities(alert: SOSAlert) {
+        // TODO: Replace hardcoded emergency number ("112") with a configurable parameter and enhance the notification process (e.g., integration with an external alert service).
+        val emergencyNumber = "112" // Replace with actual emergency number
+        val message = "Emergency alert: ${alert.userId} needs help!"
+        sendSmsWithRetry(emergencyNumber, message)
+    }
+
+
+    private suspend fun createEmergencyLocationShare(
+        userId: String,
+        bookingId: String?
+    ): LocationShare {
+        val settings = emergencySettingsDao.getEmergencySettings(userId).first()
+        val share = LocationShare(
+            userId = userId,
+            bookingId = bookingId,
+            shareCode = generateShareCode(),
+            recipientType = ShareRecipientType.AUTHORITY,
+            expiresAt = LocalDateTime.now().plusHours(
+                settings?.locationShareDuration?.toLong() ?: 24
+            ),
+            metadata = ShareMetadata(
+                shareLink = createTrackingLink(userId)
+            )
+        )
+        locationShareDao.insertLocationShare(share)
+        return share
+    }
+
+    suspend fun reportIncident(
+        userId: String,
+        bookingId: String?,
+        type: IncidentType,
+        description: String,
+        photos: List<String> = emptyList()
+    ): Incident {
+        val location = locationService.getCurrentLocation()
+        val incident = Incident(
+            userId = userId,
+            bookingId = bookingId,
+            type = type,
+            location = location,
+            description = description,
+            photos = photos,
+            metadata = IncidentMetadata(
+                reportedBy = userId,
+                priority = calculateIncidentPriority(type)
+            )
+        )
+        incidentDao.insertIncident(incident)
+        return incident
+    }
+
+    private fun calculateIncidentPriority(type: IncidentType): IncidentPriority {
+        return when (type) {
+            IncidentType.HARASSMENT -> IncidentPriority.HIGH
+            IncidentType.DANGEROUS_DRIVING -> IncidentPriority.HIGH
+            IncidentType.ROUTE_DEVIATION -> IncidentPriority.MEDIUM
+            IncidentType.VEHICLE_ISSUE -> IncidentPriority.MEDIUM
+            IncidentType.SERVICE_QUALITY -> IncidentPriority.LOW
+            IncidentType.OTHER -> IncidentPriority.LOW
+        }
+    }
+
+    suspend fun createSafetyCheck(
+        userId: String,
+        bookingId: String?,
+        type: SafetyCheckType
+    ): SafetyCheck {
+        val location = locationService.getCurrentLocation()
+        val check = SafetyCheck(
+            userId = userId,
+            bookingId = bookingId,
+            type = type,
+            status = SafetyCheckStatus.PENDING,
+            metadata = SafetyCheckMetadata(
+                location = location,
+                speed = locationService.getCurrentSpeed(),
+                batteryLevel = getBatteryLevel()
+            )
+        )
+        safetyCheckDao.insertSafetyCheck(check)
+        
+        // Show notification
+        notificationService.showSafetyCheckNotification(check)
+        
+        return check
+    }
+
+    suspend fun respondToSafetyCheck(
+        checkId: String,
+        response: Boolean
+    ) {
+        safetyCheckDao.updateCheckResponse(
+            checkId = checkId,
+            status = SafetyCheckStatus.RESPONDED,
+            response = response
+        )
+    }
+
+    suspend fun shareLocation(
+        userId: String,
+        bookingId: String?,
+        recipientType: ShareRecipientType,
+        recipientId: String? = null,
+        duration: Int = 24
+    ): LocationShare {
+        val share = LocationShare(
+            userId = userId,
+            bookingId = bookingId,
+            shareCode = generateShareCode(),
+            recipientType = recipientType,
+            recipientId = recipientId,
+            expiresAt = LocalDateTime.now().plusHours(duration.toLong()),
+            metadata = ShareMetadata(
+                shareLink = createTrackingLink(userId)
+            )
+        )
+        locationShareDao.insertLocationShare(share)
+        return share
+    }
+
+    private fun generateShareCode(): String {
+        return "SHARE" + System.currentTimeMillis()
+    }
+
+    private fun createTrackingLink(identifier: String): String {
+        return "https://track.indicab.com/$identifier"
+    }
+
+    private fun getBatteryLevel(): Int {
         // Implementation to get device battery level
         return 100
     }

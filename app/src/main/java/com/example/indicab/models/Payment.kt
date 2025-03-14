@@ -63,6 +63,8 @@ data class PaymentMethodDetails(
 data class Transaction(
     @PrimaryKey
     val id: String = "TXN" + System.currentTimeMillis(),
+    val statusCode: String? = null, // New field for status codes
+    val errorMessage: String? = null, // New field for error messages
     val userId: String,
     val bookingId: String? = null,
     val amount: Double,
