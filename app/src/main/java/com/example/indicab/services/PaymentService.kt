@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.first
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import android.util.Log
 
 @Singleton
 class PaymentService @Inject constructor(
@@ -18,6 +19,7 @@ class PaymentService @Inject constructor(
     private val paymentGateway: PaymentGateway
 ) {
     suspend fun processPayment(request: PaymentRequest): PaymentGatewayResponse {
+        Log.d("PaymentService", "Processing payment for userId=${request.userId}, bookingId=${request.bookingId}, amount=${request.amount}")
         return try {
             // Create initial transaction record
             val transaction = Transaction(
@@ -54,6 +56,7 @@ class PaymentService @Inject constructor(
 
             response
         } catch (e: Exception) {
+            Log.e("PaymentService", "Payment processing failed for userId=${request.userId}, bookingId=${request.bookingId}: ${e.message}", e)
             PaymentGatewayResponse(
                 success = false,
                 transactionId = null,
@@ -67,6 +70,7 @@ class PaymentService @Inject constructor(
 
     private suspend fun processWalletPayment(request: PaymentRequest): PaymentGatewayResponse {
         val wallet = walletDao.getWallet(request.userId).first()
+        Log.d("PaymentService", "Processing wallet payment for userId=${request.userId}, amount=${request.amount}, currentBalance=${wallet?.balance}")
         return if (wallet != null && wallet.balance >= request.amount) {
             walletDao.updateBalance(request.userId, -request.amount)
             PaymentGatewayResponse(
@@ -77,6 +81,7 @@ class PaymentService @Inject constructor(
                 status = TransactionStatus.COMPLETED
             )
         } else {
+            Log.e("PaymentService", "Insufficient wallet balance for userId=${request.userId}, attemptedAmount=${request.amount}")
             PaymentGatewayResponse(
                 success = false,
                 transactionId = null,
@@ -114,6 +119,7 @@ class PaymentService @Inject constructor(
         amount: Double,
         reason: String
     ): PaymentGatewayResponse {
+        Log.d("PaymentService", "Processing refund for transactionId=$transactionId, amount=$amount")
         val transaction = transactionDao.getTransactionById(transactionId)
         return if (transaction != null) {
             val refundResponse = paymentGateway.processRefund(
@@ -145,6 +151,7 @@ class PaymentService @Inject constructor(
 
             refundResponse
         } else {
+            Log.e("PaymentService", "Original transaction not found for transactionId=$transactionId")
             PaymentGatewayResponse(
                 success = false,
                 transactionId = null,
@@ -193,11 +200,4 @@ class PaymentService @Inject constructor(
 
     suspend fun removePaymentMethod(paymentMethod: PaymentMethod) =
         paymentMethodDao.deletePaymentMethod(paymentMethod)
-}
-
-// Interface for actual payment gateway implementation
-interface PaymentGateway {
-    suspend fun processPayment(request: PaymentRequest): PaymentGatewayResponse
-    suspend fun processRefund(originalTransactionId: String, amount: Double): PaymentGatewayResponse
-    suspend fun checkTransactionStatus(transactionId: String): PaymentGatewayResponse
 }

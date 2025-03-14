@@ -17,13 +17,31 @@ data class BookingRequest(
     val date: String = "",
     val time: String = "",
     val carType: String = "",
-    val passengers: Int = 0
+    val passengers: Int = 0,
+    val paymentMethod: String = "CASH",
+    val specialRequests: String = ""
 ) {
+
     // Helper properties to maintain compatibility
     val hasMultipleStops: Boolean
         get() = route?.stops?.isNotEmpty() ?: false
 
+    fun isValid(): Boolean {
+        return userId.isNotBlank() &&
+                carTypeId.isNotBlank() &&
+                pickupLocation.isValid() &&
+                dropLocation.isValid() &&
+                pickupTime > System.currentTimeMillis() &&
+                passengers in 1..6 &&
+                tripType in listOf("ONE_WAY", "ROUND_TRIP", "HOURLY") &&
+                paymentMethod in listOf("CASH", "WALLET", "CARD")
+    }
+
     // Convert legacy locations to RouteWithWaypoints
+    fun isValidRequest(): Boolean {
+        return userId.isNotEmpty() && carTypeId.isNotEmpty() && route != null
+    }
+
     fun toRouteWithWaypoints(): RouteWithWaypoints {
         return route ?: RouteWithWaypoints(
             waypoints = listOfNotNull(
@@ -52,8 +70,11 @@ data class BookingRequest(
             date: String = "",
             time: String = "",
             carType: String = "",
-            passengers: Int = 0
+            passengers: Int = 0,
+            paymentMethod: String = "CASH",
+            specialRequests: String = ""
         ): BookingRequest {
+
             return BookingRequest(
                 id = "BK" + System.currentTimeMillis(),
                 userId = userId,

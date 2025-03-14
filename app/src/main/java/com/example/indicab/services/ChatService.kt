@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import android.util.Log
 
 @Singleton
 class ChatService @Inject constructor(
@@ -37,6 +38,7 @@ class ChatService @Inject constructor(
                     isConnected = isConnected,
                     isReconnecting = !isConnected && it.isConnected
                 ) }
+                Log.d("ChatService", "Socket connection state changed: $isConnected")
             }
         }
     }
@@ -89,6 +91,7 @@ class ChatService @Inject constructor(
 
         // Connect to chat socket
         chatSocket.joinRoom(chatRoom.id)
+        Log.d("ChatService", "Chat room created: $chatRoom with participants: riderId=$riderId, driverId=$driverId")
         return chatRoom
     }
 
@@ -112,8 +115,10 @@ class ChatService @Inject constructor(
             chatSocket.sendMessage(message)
             messageDao.updateMessageStatus(message.id, MessageStatus.SENT)
             updateChatRoomLastMessage(chatRoomId, content)
+            Log.d("ChatService", "Message sent: $content in chatRoomId=$chatRoomId")
         } catch (e: Exception) {
             messageDao.updateMessageStatus(message.id, MessageStatus.FAILED)
+            Log.e("ChatService", "Failed to send message in chatRoomId=$chatRoomId: ${e.message}", e)
             throw e
         }
 
@@ -138,11 +143,13 @@ class ChatService @Inject constructor(
         )
         messageDao.insertMessage(message)
         updateChatRoomLastMessage(chatRoomId, content)
+        Log.d("ChatService", "System message sent: $content in chatRoomId=$chatRoomId")
     }
 
     suspend fun markMessageAsRead(messageId: String) {
         messageDao.updateMessageStatus(messageId, MessageStatus.READ)
         chatSocket.sendReadReceipt(messageId)
+        Log.d("ChatService", "Message marked as read: messageId=$messageId")
     }
 
     suspend fun updateTypingStatus(
@@ -152,6 +159,7 @@ class ChatService @Inject constructor(
     ) {
         participantDao.updateTypingStatus(chatRoomId, userId, isTyping)
         chatSocket.sendTypingStatus(chatRoomId, userId, isTyping)
+        Log.d("ChatService", "Typing status updated for userId=$userId in chatRoomId=$chatRoomId: $isTyping")
     }
 
     private suspend fun handleIncomingMessage(message: Message) {
@@ -173,14 +181,17 @@ class ChatService @Inject constructor(
                 )
             )
         }
+        Log.d("ChatService", "Incoming message handled: ${message.content} from ${message.senderId}")
     }
 
     private suspend fun handleParticipantUpdate(participant: ChatParticipant) {
         participantDao.updateParticipant(participant)
+        Log.d("ChatService", "Participant updated: $participant")
     }
 
     private suspend fun updateChatRoomLastMessage(chatRoomId: String, content: String) {
         chatRoomDao.updateLastMessage(chatRoomId, content)
+        Log.d("ChatService", "Chat room last message updated: $content in chatRoomId=$chatRoomId")
     }
 
     fun getChatRoom(chatRoomId: String): Flow<ChatRoom?> =
@@ -202,19 +213,23 @@ class ChatService @Inject constructor(
     suspend fun archiveChatRoom(chatRoomId: String) {
         chatRoomDao.updateStatus(chatRoomId, ChatRoomStatus.ARCHIVED)
         chatSocket.leaveRoom(chatRoomId)
+        Log.d("ChatService", "Chat room archived: chatRoomId=$chatRoomId")
     }
 
     suspend fun clearChat(chatRoomId: String) {
         messageDao.deleteMessages(chatRoomId)
         chatRoomDao.updateLastMessage(chatRoomId, "")
+        Log.d("ChatService", "Chat cleared: chatRoomId=$chatRoomId")
     }
 
     suspend fun updateChatSettings(settings: ChatSettings) {
         settingsDao.updateChatSettings(settings)
+        Log.d("ChatService", "Chat settings updated: $settings")
     }
 
     fun disconnect() {
         chatSocket.disconnect()
+        Log.d("ChatService", "Chat socket disconnected")
     }
 }
 

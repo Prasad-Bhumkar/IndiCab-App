@@ -69,6 +69,7 @@ class AppMonitor @Inject constructor(
                             screen = "network"
                         )
                     )
+                    Log.w(TAG, "Slow network requests detected: ${metrics.averageTime}ms")
                 }
             }
 
@@ -81,6 +82,7 @@ class AppMonitor @Inject constructor(
                             screen = "ui"
                         )
                     )
+                    Log.w(TAG, "Slow UI rendering detected: ${metrics.averageTime}ms")
                 }
             }
         }
@@ -88,10 +90,13 @@ class AppMonitor @Inject constructor(
 
     private fun setupErrorTracking() {
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            val fullStackTrace = android.util.Log.getStackTraceString(throwable)
             analyticsManager.logError(throwable, mapOf(
                 "thread" to thread.name,
-                "thread_id" to thread.id.toString()
+                "thread_id" to thread.id.toString(),
+                "stacktrace" to fullStackTrace
             ))
+            Log.e(TAG, "Uncaught exception in thread ${thread.name} (ID: ${thread.id}): $fullStackTrace")
         }
     }
 
@@ -112,6 +117,7 @@ class AppMonitor @Inject constructor(
     fun reportError(error: Throwable, screen: String) {
         analyticsManager.logError(error, mapOf("screen" to screen))
         Log.e(TAG, "Error in $screen: ${error.message}", error)
+        Log.e(TAG, "Full stack trace: ${Log.getStackTraceString(error)}")
     }
 
     fun trackNetworkCall(url: String, durationMs: Long) {
@@ -124,6 +130,7 @@ class AppMonitor @Inject constructor(
                         screen = "network"
                     )
                 )
+                Log.w(TAG, "Network call to $url took ${durationMs}ms")
             }
         }
     }
@@ -158,8 +165,3 @@ class AppMonitor @Inject constructor(
         private const val UI_RENDER_THRESHOLD_MS = 16L
     }
 }
-
-data class CustomEvent(
-    val action: String,
-    override val parameters: Map<String, Any> = emptyMap()
-) : AnalyticsEvent("custom_event", parameters)

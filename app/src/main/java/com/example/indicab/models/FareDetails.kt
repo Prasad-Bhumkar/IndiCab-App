@@ -7,4 +7,8 @@ data class FareDetails(
     val distance: Double,
     val estimatedTime: String,
     val currency: String
-) 
+) {
+    fun calculateTotalFare(): Double {
+        return baseFare + distanceFare
+    }
+}

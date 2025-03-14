@@ -8,4 +8,4 @@ data class CarType(
     val pricePerKm: Double,
     val capacity: Int,
     val imageUrl: String
-) 
+)

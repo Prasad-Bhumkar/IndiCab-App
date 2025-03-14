@@ -15,6 +15,11 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        kotlinOptions {
+                jvmTarget = "11" // Set Kotlin JVM target to 11
+
+        }
     }
 
     buildTypes {
@@ -28,6 +33,7 @@ android {
 dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-compiler:2.44")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0") // Add Kotlin standard library
 
     // Other dependencies...
 }

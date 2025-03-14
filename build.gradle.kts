@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.8.0"
 }
 
 repositories {
@@ -8,4 +8,10 @@ repositories {
 
 dependencies {
     // Add your dependencies here
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8" // Set to a supported version
+    }
 }
