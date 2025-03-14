@@ -26,4 +26,7 @@ sealed class NavDestinations(val route: String) {
         fun createRoute(bookingId: String? = null): String =
             "emergency/${bookingId ?: "null"}"
     }
+
+    // Monitoring
+    object MonitoringDashboard : NavDestinations("monitoring_dashboard")
 }
