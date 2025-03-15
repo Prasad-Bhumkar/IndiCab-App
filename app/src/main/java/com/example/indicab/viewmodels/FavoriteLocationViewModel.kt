@@ -1,5 +1,6 @@
 package com.example.indicab.viewmodels
 
+import com.example.indicab.services.UserManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,8 +14,65 @@ import java.time.LocalDateTime
 
 class FavoriteLocationViewModel(
     private val repository: FavoriteLocationRepository,
-    private val userId: String // TODO: Get from UserManager
+    private val userManager: UserManager
 ) : ViewModel() {
+    private val userId: String
+        get() = userManager.getUserId().first() ?: throw IllegalStateException("User ID not available")
+    private fun validateLocation(location: Location): Boolean {
+        return location.latitude in -90.0..90.0 &&
+               location.longitude in -180.0..180.0
+    }
+
+    private fun validateLabel(label: String): Boolean {
+        return label.isNotBlank()
+    }
+
+    private fun handleLocationError(e: Exception): FavoriteLocationUiState.Error {
+        e.printStackTrace()
+        return when (e) {
+            is IllegalArgumentException -> FavoriteLocationUiState.Error(e.message ?: "Invalid input")
+            else -> FavoriteLocationUiState.Error("Failed to perform location operation")
+        }
+    }
+
+    private val cachedLocations = mutableMapOf<String, FavoriteLocation>()
+
+    private fun getCachedLocation(id: String): FavoriteLocation? {
+        return cachedLocations[id]
+    }
+
+    private fun cacheLocation(location: FavoriteLocation) {
+        cachedLocations[location.id] = location
+    }
+
+    private val _categories = MutableStateFlow<List<String>>(emptyList())
+    val categories = _categories.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _categories.value = repository.getAllCategories(userId)
+        }
+    }
+
+    fun shareLocation(locationId: String, recipientId: String): Boolean {
+        viewModelScope.launch {
+            try {
+                val location = repository.getFavoriteLocationById(locationId, userId)
+                location?.let {
+                    val shareLink = createShareLink(it)
+                    // TODO: Implement actual sharing logic (e.g., via SMS, email, etc.)
+                    return@shareLocation true
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return false
+    }
+
+    private fun createShareLink(location: FavoriteLocation): String {
+        return "https://maps.indicab.com/location/${location.id}"
+    }
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
@@ -80,6 +138,12 @@ class FavoriteLocationViewModel(
         viewModelScope.launch {
             try {
                 _uiState.value = FavoriteLocationUiState.Loading
+                if (!validateLocation(location)) {
+                    throw IllegalArgumentException("Invalid location coordinates")
+                }
+                if (!validateLabel(label)) {
+                    throw IllegalArgumentException("Label cannot be empty")
+                }
                 val favoriteLocation = FavoriteLocation(
                     userId = userId,
                     location = location,
@@ -88,9 +152,10 @@ class FavoriteLocationViewModel(
                     tags = tags
                 )
                 repository.addFavoriteLocation(favoriteLocation)
+                cacheLocation(favoriteLocation)
                 _uiState.value = FavoriteLocationUiState.Success
             } catch (e: Exception) {
-                _uiState.value = FavoriteLocationUiState.Error(e.message ?: "Failed to add location")
+                _uiState.value = handleLocationError(e)
             }
         }
     }
@@ -106,6 +171,9 @@ class FavoriteLocationViewModel(
                 _uiState.value = FavoriteLocationUiState.Loading
                 val existing = repository.getFavoriteLocationById(id, userId)
                 existing?.let {
+                    if (label != null && !validateLabel(label)) {
+                        throw IllegalArgumentException("Label cannot be empty")
+                    }
                     val updated = it.copy(
                         label = label ?: it.label,
                         type = type ?: it.type,
@@ -113,12 +181,13 @@ class FavoriteLocationViewModel(
                         updatedAt = LocalDateTime.now()
                     )
                     repository.updateFavoriteLocation(updated)
+                    cacheLocation(updated)
                     _uiState.value = FavoriteLocationUiState.Success
                 } ?: run {
                     _uiState.value = FavoriteLocationUiState.Error("Location not found")
                 }
             } catch (e: Exception) {
-                _uiState.value = FavoriteLocationUiState.Error(e.message ?: "Failed to update location")
+                _uiState.value = handleLocationError(e)
             }
         }
     }
@@ -147,12 +216,12 @@ class FavoriteLocationViewModel(
 
     class Factory(
         private val repository: FavoriteLocationRepository,
-        private val userId: String
+        private val userManager: UserManager
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FavoriteLocationViewModel::class.java)) {
-                return FavoriteLocationViewModel(repository, userId) as T
+                return FavoriteLocationViewModel(repository, userManager) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

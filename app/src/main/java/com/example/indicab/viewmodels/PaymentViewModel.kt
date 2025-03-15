@@ -13,6 +13,11 @@ class PaymentViewModel(
     private val paymentService: PaymentService,
     private val userId: String // TODO: Get from UserManager
 ) : ViewModel() {
+    // TODO: Implement payment method validation
+    // TODO: Add error handling for payment failures
+    // TODO: Implement transaction history tracking
+    // TODO: Add support for multiple payment gateways
+    // TODO: Implement refund processing logic
 
     private val _paymentState = MutableStateFlow<PaymentState>(PaymentState.Initial)
     val paymentState = _paymentState.asStateFlow()
