@@ -46,3 +46,26 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+
+class FavoriteLocationRepository(private val favoriteLocationDao: FavoriteLocationDao) {
+    fun getFavoriteLocations(userId: String) = 
+        favoriteLocationDao.getFavoriteLocations(userId)
+
+    suspend fun getHomeLocation(userId: String) = 
+        favoriteLocationDao.getHomeLocation(userId)
+
+    suspend fun getWorkLocation(userId: String) = 
+        favoriteLocationDao.getWorkLocation(userId)
+
+    fun getPrimaryLocations(userId: String) = 
+        favoriteLocationDao.getPrimaryLocations(userId)
+
+    suspend fun insert(favoriteLocation: FavoriteLocation) = 
+        favoriteLocationDao.insert(favoriteLocation)
+
+    suspend fun update(favoriteLocation: FavoriteLocation) = 
+        favoriteLocationDao.update(favoriteLocation)
+
+    suspend fun delete(id: Long) = 
+        favoriteLocationDao.delete(id)
+}
