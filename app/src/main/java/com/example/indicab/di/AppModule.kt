@@ -18,10 +18,16 @@ object AppModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
+        val certificatePinner = CertificatePinner.Builder()
+            .add("api.indicab.com", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=") // Replace with actual certificate pin
+            .add("api.indicab.com", "sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=") // Replace with backup certificate pin
+            .build()
+
         return OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .certificatePinner(certificatePinner)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
@@ -115,5 +121,11 @@ object AppModule {
     @Singleton
     fun provideMonitoringService(context: Context): MonitoringService {
         return MonitoringService(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSecureStorage(context: Context): SecureStorage {
+        return SecureStorage(context)
     }
 }
