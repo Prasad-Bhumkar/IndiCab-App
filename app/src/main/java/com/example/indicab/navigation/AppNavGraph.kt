@@ -29,7 +29,7 @@ fun NavGraph(
         }
 
         composable(NavDestinations.BookRide.route) {
-            BookRideScreen(
+            EnhancedBookRideScreen(
                 navController = navController,
                 onMenuClick = onMenuClick
             )

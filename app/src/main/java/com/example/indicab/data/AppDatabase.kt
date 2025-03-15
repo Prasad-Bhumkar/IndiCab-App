@@ -38,38 +38,25 @@ abstract class AppDatabase : RoomDatabase() {
     }
 }
 
-// Repository class for favorite locations
 class FavoriteLocationRepository(private val favoriteLocationDao: FavoriteLocationDao) {
-    fun getAllFavoriteLocations(userId: String) = 
-        favoriteLocationDao.getAllFavoriteLocations(userId)
+    fun getFavoriteLocations(userId: String) = 
+        favoriteLocationDao.getFavoriteLocations(userId)
 
-    fun getFavoriteLocationsByType(userId: String, type: FavoriteLocationType) =
-        favoriteLocationDao.getFavoriteLocationsByType(userId, type)
+    suspend fun getHomeLocation(userId: String) = 
+        favoriteLocationDao.getHomeLocation(userId)
 
-    fun searchFavoriteLocations(userId: String, query: String) =
-        favoriteLocationDao.searchFavoriteLocations(userId, query)
+    suspend fun getWorkLocation(userId: String) = 
+        favoriteLocationDao.getWorkLocation(userId)
 
-    fun getRecentFavoriteLocations(userId: String, limit: Int = 5) =
-        favoriteLocationDao.getRecentFavoriteLocations(userId, limit)
+    fun getPrimaryLocations(userId: String) = 
+        favoriteLocationDao.getPrimaryLocations(userId)
 
-    fun getHomeAndWorkLocations(userId: String) =
-        favoriteLocationDao.getHomeAndWorkLocations(userId)
+    suspend fun insert(favoriteLocation: FavoriteLocation) = 
+        favoriteLocationDao.insert(favoriteLocation)
 
-    fun getAllTags(userId: String) = 
-        favoriteLocationDao.getAllTags(userId)
+    suspend fun update(favoriteLocation: FavoriteLocation) = 
+        favoriteLocationDao.update(favoriteLocation)
 
-    suspend fun addFavoriteLocation(location: FavoriteLocation) =
-        favoriteLocationDao.addOrUpdateFavoriteLocation(location)
-
-    suspend fun updateFavoriteLocation(location: FavoriteLocation) =
-        favoriteLocationDao.updateFavoriteLocation(location)
-
-    suspend fun deleteFavoriteLocation(location: FavoriteLocation) =
-        favoriteLocationDao.deleteFavoriteLocation(location)
-
-    suspend fun incrementUsageCount(id: String, userId: String) =
-        favoriteLocationDao.incrementUsageCount(id, userId)
-
-    suspend fun getFavoriteLocationById(id: String, userId: String) =
-        favoriteLocationDao.getFavoriteLocationById(id, userId)
+    suspend fun delete(id: Long) = 
+        favoriteLocationDao.delete(id)
 }
