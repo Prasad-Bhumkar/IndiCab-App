@@ -10,10 +10,27 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController) {
-    var name by remember { mutableStateOf("John Doe") }
-    var email by remember { mutableStateOf("john.doe@example.com") }
-    var phone by remember { mutableStateOf("+1 234 567 8900") }
+fun ProfileScreen(
+    navController: NavController,
+    viewModel: ProfileViewModel = viewModel()
+) {
+    val profileState by viewModel.profileState.collectAsState()
+    val editState by viewModel.editState.collectAsState()
+    
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    
+    LaunchedEffect(profileState) {
+        when (val state = profileState) {
+            is ProfileState.Success -> {
+                name = state.profile.name
+                email = state.profile.email
+                phone = state.profile.phone
+            }
+            else -> {}
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -65,13 +82,54 @@ fun ProfileScreen(navController: NavController) {
             }
         }
 
-        Button(
-            onClick = { /* TODO: Implement save profile logic */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text("Save Changes")
+        when (editState) {
+            EditProfileState.Updating -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is EditProfileState.Error -> {
+                Text(
+                    text = (editState as EditProfileState.Error).message,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                Button(
+                    onClick = {
+                        viewModel.updateProfile(
+                            name = name,
+                            email = email,
+                            phone = phone
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                ) {
+                    Text("Try Again")
+                }
+            }
+            else -> {
+                Button(
+                    onClick = {
+                        viewModel.updateProfile(
+                            name = name,
+                            email = email,
+                            phone = phone
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                ) {
+                    Text("Save Changes")
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
