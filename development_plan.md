@@ -29,7 +29,7 @@ IndiCab will follow a clean architecture pattern with MVVM (Model-View-ViewModel
 │   │   ├── /app
 │   │   │   ├── /src
 │   │   │   │   ├── /main
-│   │   │   │   │   ├── /java/com/solidride
+│   │   │   │   │   ├── /java/com/indicab
 │   │   │   │   │   │   ├── /data
 │   │   │   │   │   │   │   ├── /api
 │   │   │   │   │   │   │   │   ├── ApiService.java
@@ -112,7 +112,7 @@ IndiCab's backend will be built using a microservices architecture to ensure sca
 /backend
 ├── /auth-service
 │   ├── src/
-│   │   ├── main/java/com/solidride/auth
+│   │   ├── main/java/com/indicab/auth
 │   │   │   ├── controllers/
 │   │   │   ├── services/
 │   │   │   ├── repositories/
@@ -121,7 +121,7 @@ IndiCab's backend will be built using a microservices architecture to ensure sca
 │   ├── Dockerfile
 ├── /ride-service
 │   ├── src/
-│   │   ├── main/java/com/solidride/ride
+│   │   ├── main/java/com/indicab/ride
 │   │   │   ├── controllers/
 │   │   │   ├── services/
 │   │   │   ├── repositories/
@@ -130,23 +130,23 @@ IndiCab's backend will be built using a microservices architecture to ensure sca
 │   ├── Dockerfile
 ├── /driver-service
 │   ├── src/
-│   │   ├── main/java/com/solidride/driver
+│   │   ├── main/java/com/indicab/driver
 │   ├── Dockerfile
 ├── /payment-service
 │   ├── src/
-│   │   ├── main/java/com/solidride/payment
+│   │   ├── main/java/com/indicab/payment
 │   ├── Dockerfile
 ├── /notification-service
 │   ├── src/
-│   │   ├── main/java/com/solidride/notification
+│   │   ├── main/java/com/indicab/notification
 │   ├── Dockerfile
 ├── /api-gateway
 │   ├── src/
-│   │   ├── main/java/com/solidride/gateway
+│   │   ├── main/java/com/indicab/gateway
 │   ├── Dockerfile
 ├── /discovery-service
 │   ├── src/
-│   │   ├── main/java/com/solidride/discovery
+│   │   ├── main/java/com/indicab/discovery
 │   ├── Dockerfile
 ├── docker-compose.yml
 ```
@@ -169,11 +169,11 @@ IndiCab's authentication system will provide multiple login methods tailored to 
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/data/api/AuthApi.java
-/android/app/src/main/java/com/solidride/domain/usecases/AuthUseCase.java
-/android/app/src/main/java/com/solidride/presentation/auth/LoginActivity.java
-/android/app/src/main/java/com/solidride/presentation/auth/OtpVerificationActivity.java
-/android/app/src/main/java/com/solidride/presentation/auth/SocialLoginHandler.java
+/android/app/src/main/java/com/indicab/data/api/AuthApi.java
+/android/app/src/main/java/com/indicab/domain/usecases/AuthUseCase.java
+/android/app/src/main/java/com/indicab/presentation/auth/LoginActivity.java
+/android/app/src/main/java/com/indicab/presentation/auth/OtpVerificationActivity.java
+/android/app/src/main/java/com/indicab/presentation/auth/SocialLoginHandler.java
 ```
 
 The authentication flow will use Firebase Authentication for phone number verification and social login integration. This approach allows for seamless authentication with Google, Facebook, and phone numbers while maintaining high security standards[^1]. The OTP verification system will include:
@@ -187,9 +187,9 @@ The authentication flow will use Firebase Authentication for phone number verifi
 Profile management will be implemented with a focus on information relevant to the Indian context, including:
 
 ```
-/android/app/src/main/java/com/solidride/presentation/profile/ProfileActivity.java
-/android/app/src/main/java/com/solidride/presentation/profile/ProfileViewModel.java
-/android/app/src/main/java/com/solidride/presentation/profile/EmergencyContactsActivity.java
+/android/app/src/main/java/com/indicab/presentation/profile/ProfileActivity.java
+/android/app/src/main/java/com/indicab/presentation/profile/ProfileViewModel.java
+/android/app/src/main/java/com/indicab/presentation/profile/EmergencyContactsActivity.java
 ```
 
 The multi-language support will implement Android's localization framework with resources for Hindi, Tamil, Telugu, Malayalam, Marathi, Bengali, and English, with on-demand resource loading to minimize app size.
@@ -202,11 +202,11 @@ IndiCab's booking system will incorporate India-specific ride options and locati
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/booking/BookRideActivity.java
-/android/app/src/main/java/com/solidride/presentation/booking/LocationPickerActivity.java
-/android/app/src/main/java/com/solidride/presentation/booking/VehicleSelectionFragment.java
-/android/app/src/main/java/com/solidride/presentation/booking/FareEstimationFragment.java
-/android/app/src/main/java/com/solidride/domain/usecases/BookRideUseCase.java
+/android/app/src/main/java/com/indicab/presentation/booking/BookRideActivity.java
+/android/app/src/main/java/com/indicab/presentation/booking/LocationPickerActivity.java
+/android/app/src/main/java/com/indicab/presentation/booking/VehicleSelectionFragment.java
+/android/app/src/main/java/com/indicab/presentation/booking/FareEstimationFragment.java
+/android/app/src/main/java/com/indicab/domain/usecases/BookRideUseCase.java
 ```
 
 Location services will utilize a hybrid approach combining Google Maps API with MapmyIndia's SDK for improved accuracy in Indian localities, particularly in smaller cities and rural areas[^1][^4]. Address prediction will incorporate local landmarks, which are commonly used for navigation in India.
@@ -235,10 +235,10 @@ IndiCab's driver application will be designed with particular attention to the v
 **Implementation Files:**
 
 ```
-/driver-android/app/src/main/java/com/solidride/driver/presentation/home/HomeActivity.java
-/driver-android/app/src/main/java/com/solidride/driver/presentation/ride/AcceptRideActivity.java
-/driver-android/app/src/main/java/com/solidride/driver/presentation/earnings/EarningsActivity.java
-/driver-android/app/src/main/java/com/solidride/driver/presentation/profile/DocumentVerificationActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/home/HomeActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/ride/AcceptRideActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/earnings/EarningsActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/profile/DocumentVerificationActivity.java
 ```
 
 The driver onboarding process will include:
@@ -263,10 +263,10 @@ Real-time tracking will be implemented with a focus on reliability even in areas
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/tracking/TrackRideActivity.java
-/android/app/src/main/java/com/solidride/presentation/tracking/NavigationActivity.java
-/android/app/src/main/java/com/solidride/utils/LocationTracker.java
-/android/app/src/main/java/com/solidride/utils/GeofencingManager.java
+/android/app/src/main/java/com/indicab/presentation/tracking/TrackRideActivity.java
+/android/app/src/main/java/com/indicab/presentation/tracking/NavigationActivity.java
+/android/app/src/main/java/com/indicab/utils/LocationTracker.java
+/android/app/src/main/java/com/indicab/utils/GeofencingManager.java
 ```
 
 The tracking system will use:
@@ -292,11 +292,11 @@ IndiCab's payment infrastructure will integrate all major Indian payment methods
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/payment/PaymentActivity.java
-/android/app/src/main/java/com/solidride/presentation/payment/UpiPaymentFragment.java
-/android/app/src/main/java/com/solidride/presentation/payment/WalletFragment.java
-/android/app/src/main/java/com/solidride/data/api/PaymentApi.java
-/android/app/src/main/java/com/solidride/domain/usecases/ProcessPaymentUseCase.java
+/android/app/src/main/java/com/indicab/presentation/payment/PaymentActivity.java
+/android/app/src/main/java/com/indicab/presentation/payment/UpiPaymentFragment.java
+/android/app/src/main/java/com/indicab/presentation/payment/WalletFragment.java
+/android/app/src/main/java/com/indicab/data/api/PaymentApi.java
+/android/app/src/main/java/com/indicab/domain/usecases/ProcessPaymentUseCase.java
 ```
 
 The payment system will include:
@@ -317,9 +317,9 @@ Safety features will be prioritized with special attention to women's safety con
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/safety/SafetyControlCenterActivity.java
-/android/app/src/main/java/com/solidride/utils/EmergencyResponseManager.java
-/android/app/src/main/java/com/solidride/utils/TripSharingManager.java
+/android/app/src/main/java/com/indicab/presentation/safety/SafetyControlCenterActivity.java
+/android/app/src/main/java/com/indicab/utils/EmergencyResponseManager.java
+/android/app/src/main/java/com/indicab/utils/TripSharingManager.java
 /android/app/src/main/res/layout/activity_safety_control_center.xml
 ```
 
@@ -369,7 +369,7 @@ Localization will extend beyond simple translation to include cultural adaptatio
 /android/app/src/main/res/values-ml/strings.xml
 /android/app/src/main/res/values-mr/strings.xml
 /android/app/src/main/res/values-bn/strings.xml
-/android/app/src/main/java/com/solidride/utils/LocaleHelper.java
+/android/app/src/main/java/com/indicab/utils/LocaleHelper.java
 ```
 
 IndiCab's localization strategy will include:
@@ -395,9 +395,9 @@ To differentiate the application in the competitive Indian market, several India
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/autorickshaw/AutoRickshawBookingActivity.java
-/android/app/src/main/java/com/solidride/presentation/corporate/CorporateBookingActivity.java
-/android/app/src/main/java/com/solidride/presentation/tourism/TourPackagesActivity.java
+/android/app/src/main/java/com/indicab/presentation/autorickshaw/AutoRickshawBookingActivity.java
+/android/app/src/main/java/com/indicab/presentation/corporate/CorporateBookingActivity.java
+/android/app/src/main/java/com/indicab/presentation/tourism/TourPackagesActivity.java
 ```
 
 These features include:
@@ -418,9 +418,9 @@ IndiCab will implement comprehensive data protection measures
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/utils/EncryptionUtils.java
-/android/app/src/main/java/com/solidride/utils/DataPrivacyManager.java
-/backend/auth-service/src/main/java/com/solidride/auth/config/SecurityConfig.java
+/android/app/src/main/java/com/indicab/utils/EncryptionUtils.java
+/android/app/src/main/java/com/indicab/utils/DataPrivacyManager.java
+/backend/auth-service/src/main/java/com/indicab/auth/config/SecurityConfig.java
 ```
 
 Security measures will include:
@@ -597,11 +597,11 @@ IndiCab's booking system will incorporate India-specific ride options and locati
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/booking/BookRideActivity.java
-/android/app/src/main/java/com/solidride/presentation/booking/LocationPickerActivity.java
-/android/app/src/main/java/com/solidride/presentation/booking/VehicleSelectionFragment.java
-/android/app/src/main/java/com/solidride/presentation/booking/FareEstimationFragment.java
-/android/app/src/main/java/com/solidride/domain/usecases/BookRideUseCase.java
+/android/app/src/main/java/com/indicab/presentation/booking/BookRideActivity.java
+/android/app/src/main/java/com/indicab/presentation/booking/LocationPickerActivity.java
+/android/app/src/main/java/com/indicab/presentation/booking/VehicleSelectionFragment.java
+/android/app/src/main/java/com/indicab/presentation/booking/FareEstimationFragment.java
+/android/app/src/main/java/com/indicab/domain/usecases/BookRideUseCase.java
 ```
 
 Location services will utilize a hybrid approach combining Google Maps API with MapmyIndia's SDK for improved accuracy in Indian localities, particularly in smaller cities and rural areas[^1][^4]. Address prediction will incorporate local landmarks, which are commonly used for navigation in India.
@@ -630,10 +630,10 @@ IndiCab's driver application will be designed with particular attention to the v
 **Implementation Files:**
 
 ```
-/driver-android/app/src/main/java/com/solidride/driver/presentation/home/HomeActivity.java
-/driver-android/app/src/main/java/com/solidride/driver/presentation/ride/AcceptRideActivity.java
-/driver-android/app/src/main/java/com/solidride/driver/presentation/earnings/EarningsActivity.java
-/driver-android/app/src/main/java/com/solidride/driver/presentation/profile/DocumentVerificationActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/home/HomeActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/ride/AcceptRideActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/earnings/EarningsActivity.java
+/driver-android/app/src/main/java/com/indicab/driver/presentation/profile/DocumentVerificationActivity.java
 ```
 
 The driver onboarding process will include:
@@ -658,10 +658,10 @@ Real-time tracking will be implemented with a focus on reliability even in areas
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/tracking/TrackRideActivity.java
-/android/app/src/main/java/com/solidride/presentation/tracking/NavigationActivity.java
-/android/app/src/main/java/com/solidride/utils/LocationTracker.java
-/android/app/src/main/java/com/solidride/utils/GeofencingManager.java
+/android/app/src/main/java/com/indicab/presentation/tracking/TrackRideActivity.java
+/android/app/src/main/java/com/indicab/presentation/tracking/NavigationActivity.java
+/android/app/src/main/java/com/indicab/utils/LocationTracker.java
+/android/app/src/main/java/com/indicab/utils/GeofencingManager.java
 ```
 
 The tracking system will use:
@@ -687,11 +687,11 @@ IndiCab's payment infrastructure will integrate all major Indian payment methods
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/payment/PaymentActivity.java
-/android/app/src/main/java/com/solidride/presentation/payment/UpiPaymentFragment.java
-/android/app/src/main/java/com/solidride/presentation/payment/WalletFragment.java
-/android/app/src/main/java/com/solidride/data/api/PaymentApi.java
-/android/app/src/main/java/com/solidride/domain/usecases/ProcessPaymentUseCase.java
+/android/app/src/main/java/com/indicab/presentation/payment/PaymentActivity.java
+/android/app/src/main/java/com/indicab/presentation/payment/UpiPaymentFragment.java
+/android/app/src/main/java/com/indicab/presentation/payment/WalletFragment.java
+/android/app/src/main/java/com/indicab/data/api/PaymentApi.java
+/android/app/src/main/java/com/indicab/domain/usecases/ProcessPaymentUseCase.java
 ```
 
 The payment system will include:
@@ -712,9 +712,9 @@ Safety features will be prioritized with special attention to women's safety con
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/safety/SafetyControlCenterActivity.java
-/android/app/src/main/java/com/solidride/utils/EmergencyResponseManager.java
-/android/app/src/main/java/com/solidride/utils/TripSharingManager.java
+/android/app/src/main/java/com/indicab/presentation/safety/SafetyControlCenterActivity.java
+/android/app/src/main/java/com/indicab/utils/EmergencyResponseManager.java
+/android/app/src/main/java/com/indicab/utils/TripSharingManager.java
 /android/app/src/main/res/layout/activity_safety_control_center.xml
 ```
 
@@ -764,7 +764,7 @@ Localization will extend beyond simple translation to include cultural adaptatio
 /android/app/src/main/res/values-ml/strings.xml
 /android/app/src/main/res/values-mr/strings.xml
 /android/app/src/main/res/values-bn/strings.xml
-/android/app/src/main/java/com/solidride/utils/LocaleHelper.java
+/android/app/src/main/java/com/indicab/utils/LocaleHelper.java
 ```
 
 IndiCab's localization strategy will include:
@@ -790,9 +790,9 @@ To differentiate the application in the competitive Indian market, several India
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/presentation/autorickshaw/AutoRickshawBookingActivity.java
-/android/app/src/main/java/com/solidride/presentation/corporate/CorporateBookingActivity.java
-/android/app/src/main/java/com/solidride/presentation/tourism/TourPackagesActivity.java
+/android/app/src/main/java/com/indicab/presentation/autorickshaw/AutoRickshawBookingActivity.java
+/android/app/src/main/java/com/indicab/presentation/corporate/CorporateBookingActivity.java
+/android/app/src/main/java/com/indicab/presentation/tourism/TourPackagesActivity.java
 ```
 
 These features include:
@@ -813,9 +813,9 @@ IndiCab will implement comprehensive data protection measures
 **Implementation Files:**
 
 ```
-/android/app/src/main/java/com/solidride/utils/EncryptionUtils.java
-/android/app/src/main/java/com/solidride/utils/DataPrivacyManager.java
-/backend/auth-service/src/main/java/com/solidride/auth/config/SecurityConfig.java
+/android/app/src/main/java/com/indicab/utils/EncryptionUtils.java
+/android/app/src/main/java/com/indicab/utils/DataPrivacyManager.java
+/backend/auth-service/src/main/java/com/indicab/auth/config/SecurityConfig.java
 ```
 
 Security measures will include:

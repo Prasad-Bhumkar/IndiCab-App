@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.widget.Toast
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.example.indicab.databinding.DateTimeSelectorDialogBinding
 import com.example.indicab.models.BookingRequest
 import com.example.indicab.models.CarType
 import com.example.indicab.models.LatLng
+import com.example.indicab.models.Location
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.ComposeView
@@ -199,7 +201,6 @@ class HomeScreenActivity : AppCompatActivity() {
                     )
                 }
             }
-        }
         dialog.show()
     }
     
@@ -265,11 +266,6 @@ class HomeScreenActivity : AppCompatActivity() {
     }
     
     private fun navigateToBookingConfirmation(booking: BookingRequest) {
-        // In a real app, you would start a new activity with intent extras
-        Toast.makeText(this, "Booking created successfully!", Toast.LENGTH_LONG).show()
-        
-        // Example of starting booking confirmation activity
-        /*
         val intent = Intent(this, BookingConfirmationActivity::class.java).apply {
             putExtra("BOOKING_ID", booking.id)
             putExtra("PICKUP", booking.pickupLocation.name)
@@ -279,7 +275,6 @@ class HomeScreenActivity : AppCompatActivity() {
             putExtra("FARE", fareDetails?.total ?: 0.0)
         }
         startActivity(intent)
-        */
     }
     
     private fun updateButtonStates() {
