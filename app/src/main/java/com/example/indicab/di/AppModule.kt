@@ -128,4 +128,16 @@ object AppModule {
     fun provideSecureStorage(context: Context): SecureStorage {
         return SecureStorage(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideRideHistoryRepository(rideHistoryDao: RideHistoryDao): RideHistoryRepository {
+        return RideHistoryRepository(rideHistoryDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providePaymentService(): PaymentService {
+        return MockPaymentService()
+    }
 }

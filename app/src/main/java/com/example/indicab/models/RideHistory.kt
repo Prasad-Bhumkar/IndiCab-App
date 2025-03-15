@@ -14,7 +14,7 @@ data class RideHistory(
     val carType: CarType,
     val fareDetails: FareDetails,
     val driver: Driver,
-    val rating: Float?,
+    val rating: com.example.indicab.models.Rating?,
     val review: String?,
     val timestamp: Date,
     val paymentMethod: String,
