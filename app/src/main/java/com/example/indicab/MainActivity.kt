@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.remember
 import androidx.compose.material3.ExperimentalMaterial3Api
-<<<<<<< HEAD
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -16,18 +15,12 @@ import com.example.indicab.navigation.NavigationSetup
 import com.example.indicab.state.ActivityStateHolder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-=======
-import androidx.navigation.compose.rememberNavController
-import com.example.indicab.navigation.NavigationGraph
-import dagger.hilt.android.AndroidEntryPoint
->>>>>>> d300c9508bbed111c41ee0eecde6f5b2034faaa2
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-<<<<<<< HEAD
         
         val stateHolder = ActivityStateHolder()
         val snackbarHostState = SnackbarHostState()
@@ -70,18 +63,6 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 snackbarHostState = currentSnackbarHostState
             )
-=======
-        try {
-            setContent {
-                val navController = rememberNavController()
-                NavigationGraph(navController = navController)
-            }
-            } catch (e: Exception) {
-                // Log the exception with device information for better diagnostics
-                val deviceInfo = "Device: ${Build.MANUFACTURER} ${Build.MODEL}, SDK: ${Build.VERSION.SDK_INT}"
-                Log.e("MainActivity", "Error during startup: ${e.message} | $deviceInfo", e)
-
->>>>>>> d300c9508bbed111c41ee0eecde6f5b2034faaa2
         }
     }
 }
