@@ -45,4 +45,4 @@ fun HomeScreen(navController: NavController) {
             Text("View Profile")
         }
     }
-} 
+}

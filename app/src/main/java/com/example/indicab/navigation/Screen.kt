@@ -9,4 +9,4 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
     object History : Screen("history")
     object DriverProfile : Screen("driver_profile")
-} 
+}

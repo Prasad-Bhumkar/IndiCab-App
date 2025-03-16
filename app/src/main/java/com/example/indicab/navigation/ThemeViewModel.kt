@@ -1,31 +1,25 @@
-package com.example.indicab.viewmodels
+package com.example.indicab.navigation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.example.indicab.ui.theme.ThemeController
-import com.example.indicab.ui.theme.ThemeMode
-import com.example.indicab.ui.theme.ThemePreference
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import androidx.lifecycle.viewModelScope
 
 @HiltViewModel
 class ThemeViewModel @Inject constructor(
     private val themeController: ThemeController
 ) : ViewModel() {
-
     private val _themeState = MutableStateFlow<ThemeState>(ThemeState.Loading)
     val themeState = _themeState.asStateFlow()
-
     val themePreference = themeController.themePreferencesFlow
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = ThemePreference()
         )
-
+    
     init {
         observeThemePreferences()
     }

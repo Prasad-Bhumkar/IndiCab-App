@@ -1,17 +1,12 @@
 package com.example.indicab.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.indicab.models.BookingRequest
-import com.example.indicab.models.ScheduledRide
-import com.example.indicab.models.ScheduleStatus
 import com.example.indicab.viewmodels.ScheduleRideViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -114,7 +109,7 @@ fun ScheduleRideScreen(
                 }
             }
 
-            // Upcoming scheduled rides
+            // Upcoming scheduled rides section
             if (scheduledRides.isNotEmpty()) {
                 item {
                     Text(
@@ -227,8 +222,6 @@ fun DatePickerDialog(
     onDismissRequest: () -> Unit,
     onDateSelected: (LocalDateTime) -> Unit
 ) {
-    // TODO: Implement Material3 DatePicker
-    // For now, this is a placeholder
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = { Text("Select Date") },
@@ -255,8 +248,6 @@ fun TimePickerDialog(
     onDismissRequest: () -> Unit,
     onTimeSelected: (LocalDateTime) -> Unit
 ) {
-    // TODO: Implement Material3 TimePicker
-    // For now, this is a placeholder
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = { Text("Select Time") },

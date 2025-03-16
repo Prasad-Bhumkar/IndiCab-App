@@ -11,9 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.indicab.navigation.NavDestination
-import com.example.indicab.ui.BookingScreen
 import com.example.indicab.ui.screens.*
-import com.example.indicab.ui.theme.IndiCabTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

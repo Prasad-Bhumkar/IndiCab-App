@@ -24,7 +24,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: return@composable
-            
             DriverDashboardScreen(
                 navController = navController
             )
@@ -37,7 +36,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val vehicleId = backStackEntry.arguments?.getString("vehicleId") ?: return@composable
-            
             VehicleDetailsScreen(
                 vehicleId = vehicleId,
                 onBack = { navController.popBackStack() }
@@ -51,13 +49,12 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverPerformanceScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }
             )
         }
-
+        
         composable(
             route = DriverDestinations.DriverEarnings.route,
             arguments = listOf(
@@ -65,7 +62,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverEarningsScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }
@@ -79,7 +75,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverDocumentsScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }
@@ -93,7 +88,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverPreferencesScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }
@@ -107,7 +101,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverEarningsHistoryScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }
@@ -121,7 +114,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverPerformanceHistoryScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }
@@ -135,7 +127,6 @@ fun DriverNavGraph(
             )
         ) { backStackEntry ->
             val driverId = backStackEntry.arguments?.getString("driverId") ?: return@composable
-            
             DriverDocumentsHistoryScreen(
                 driverId = driverId,
                 onBack = { navController.popBackStack() }

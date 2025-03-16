@@ -10,7 +10,6 @@ import com.example.indicab.ui.screens.*
 import com.example.indicab.models.BookingRequest
 import com.google.gson.Gson
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
@@ -72,7 +71,7 @@ fun NavGraph(
                 val decoded = URLDecoder.decode(it, StandardCharsets.UTF_8.toString())
                 Gson().fromJson(decoded, BookingRequest::class.java)
             }
-            
+
             bookingRequest?.let {
                 ScheduleRideScreen(
                     bookingRequest = it,
