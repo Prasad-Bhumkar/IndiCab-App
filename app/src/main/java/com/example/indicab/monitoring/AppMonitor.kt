@@ -1,4 +1,4 @@
-package com.example.indicab.monitoring
+vpackage com.example.indicab.monitoring
 
 import android.util.Log
 import com.example.indicab.analytics.AnalyticsEvent
@@ -30,8 +30,76 @@ class AppMonitor @Inject constructor(
         monitorSyncState()
         monitorPerformance()
         setupErrorTracking()
+        monitorMemoryUsage()
+        monitorBatteryImpact()
+        monitorBackgroundServices()
     }
 
+    private fun monitorMemoryUsage() {
+        monitoringScope.launch {
+            while (true) {
+                val memoryInfo = ActivityManager.MemoryInfo()
+                (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                    .getMemoryInfo(memoryInfo)
+                
+                val usedMemory = memoryInfo.totalMem - memoryInfo.availMem
+                val memoryPercentage = (usedMemory.toFloat() / memoryInfo.totalMem.toFloat()) * 100
+                
+                if (memoryPercentage > MEMORY_THRESHOLD_PERCENT) {
+                    analyticsManager.logEvent(
+                        AnalyticsEvent.ErrorOccurred(
+                            errorType = "high_memory_usage",
+                            errorMessage = "Memory usage at ${"%.2f".format(memoryPercentage)}%",
+                            screen = "memory"
+                        )
+                    )
+                    Log.w(TAG, "High memory usage detected: ${"%.2f".format(memoryPercentage)}%")
+                }
+                
+                delay(MEMORY_MONITOR_INTERVAL)
+            }
+        }
+    }
+
+    private fun monitorBatteryImpact() {
+        monitoringScope.launch {
+            val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+            val batteryUsage = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+            
+            if (batteryUsage > BATTERY_THRESHOLD_MA) {
+                analyticsManager.logEvent(
+                    AnalyticsEvent.ErrorOccurred(
+                        errorType = "high_battery_usage",
+                        errorMessage = "Battery usage at ${batteryUsage}mA",
+                        screen = "battery"
+                    )
+                )
+                Log.w(TAG, "High battery usage detected: ${batteryUsage}mA")
+            }
+        }
+    }
+
+    private fun monitorBackgroundServices() {
+        monitoringScope.launch {
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val runningServices = activityManager.getRunningServices(Integer.MAX_VALUE)
+            
+            runningServices.filter { it.service.className.contains("com.example.indicab") }
+                .forEach { service ->
+                    val serviceDuration = System.currentTimeMillis() - service.lastActivityTime
+                    if (serviceDuration > BACKGROUND_SERVICE_THRESHOLD_MS) {
+                        analyticsManager.logEvent(
+                            AnalyticsEvent.ErrorOccurred(
+                                errorType = "long_running_service",
+                                errorMessage = "Service ${service.service.className} running for ${serviceDuration}ms",
+                                screen = "background"
+                            )
+                        )
+                        Log.w(TAG, "Long running service detected: ${service.service.className} running for ${serviceDuration}ms")
+                    }
+                }
+        }
+    }
     private fun monitorSyncState() {
         monitoringScope.launch {
             syncManager.syncState.collectLatest { state ->
@@ -163,5 +231,9 @@ class AppMonitor @Inject constructor(
         private const val TAG = "AppMonitor"
         private const val NETWORK_THRESHOLD_MS = 3000L
         private const val UI_RENDER_THRESHOLD_MS = 16L
+        private const val MEMORY_THRESHOLD_PERCENT = 80f
+        private const val MEMORY_MONITOR_INTERVAL = 60000L
+        private const val BATTERY_THRESHOLD_MA = 500
+        private const val BACKGROUND_SERVICE_THRESHOLD_MS = 600000L
     }
 }

@@ -1,13 +1,24 @@
 plugins {
     // Define plugins that can be applied to modules
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    id("com.google.gms.google-services") version "4.4.2" apply false
-    id("com.google.dagger.hilt.android") version "2.51" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.23.3" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
+    alias(libs.plugins.android.application) apply true
+    alias(libs.plugins.kotlin.android) apply true
+    id("com.google.gms.google-services") version "4.4.1" apply false
+    id("com.google.dagger.hilt.android") version "2.55" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.4" apply false
 }
 
+android {
+    compileSdk = 34 // Set to the latest compile SDK version
+    namespace = "com.example.indicab" // Specify the namespace
+
+    defaultConfig {
+        applicationId = "com.example.indicab" // Ensure this matches the package name
+        minSdk = 21 // Set minimum SDK version
+        targetSdk = 34 // Set target SDK version
+        versionCode = 1
+        versionName = "1.0"
+    }
+}
 
 dependencies {
     // Add your dependencies here
@@ -15,6 +26,6 @@ dependencies {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.8" // Set to a supported version
+        jvmTarget = "17" // Set to a supported version
     }
 }

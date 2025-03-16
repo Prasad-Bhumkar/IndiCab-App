@@ -3,24 +3,66 @@ package com.example.indicab
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.remember
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.navigation.compose.rememberNavController
-<<<<<<< HEAD
-import com.example.indicab.navigation.NavDestination
-import com.example.indicab.ui.screens.*
-=======
-import com.example.indicab.navigation.NavigationGraph
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.lifecycle.lifecycleScope
+import com.example.indicab.navigation.NavigationSetup
+import com.example.indicab.state.ActivityStateHolder
 import dagger.hilt.android.AndroidEntryPoint
->>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        val stateHolder = ActivityStateHolder()
+        val snackbarHostState = SnackbarHostState()
+
+        // ActivityResultLauncher for location permission
+        val locationPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                stateHolder.updateLocationPermissionState(true)
+                stateHolder.updateActivityState(ActivityState.PERMISSION_GRANTED)
+                lifecycleScope.launch {
+                    snackbarHostState.showSnackbar("Location permission granted.")
+                }
+            } else {
+                stateHolder.updateActivityState(ActivityState.PERMISSION_DENIED)
+                lifecycleScope.launch {
+                    snackbarHostState.showSnackbar("Location permission denied. Please enable it in settings.")
+                }
+            }
+        }
+
+        // Check and handle location permissions
+        lifecycleScope.launch {
+            if (!PermissionUtils.checkLocationPermission(this@MainActivity)) {
+                stateHolder.updateActivityState(ActivityState.PERMISSION_REQUESTED)
+                locationPermissionRequest.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else {
+                stateHolder.updateLocationPermissionState(true)
+                stateHolder.updateActivityState(ActivityState.PERMISSION_GRANTED)
+            }
+        }
+
         setContent {
             val navController = rememberNavController()
-            NavigationGraph(navController = navController)
+            val currentStateHolder = remember { stateHolder }
+            val currentSnackbarHostState = remember { snackbarHostState }
+
+            NavigationSetup(
+                navController = navController,
+                snackbarHostState = currentSnackbarHostState
+            )
         }
     }
 }

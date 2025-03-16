@@ -3,44 +3,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:padding="16dp">
 
         <TextView
             android:id="@+id/pickupLocationSelector"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:background="@android:drawable/editbox_background"
             android:text="Select Pickup Location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginBottom="8dp"/>
 
         <TextView
             android:id="@+id/dropLocationSelector"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:background="@android:drawable/editbox_background"
             android:text="Select Drop Location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pickupLocationSelector"
             android:layout_marginBottom="8dp"/>
 
         <TextView
             android:id="@+id/dateTimeSelector"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:background="@android:drawable/editbox_background"
             android:text="Select Date and Time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dropLocationSelector"
             android:layout_marginBottom="8dp"/>
 
         <RadioGroup
             android:id="@+id/tripTypeSelector"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dateTimeSelector"
             android:layout_marginBottom="8dp">
             <RadioButton 
                 android:id="@+id/oneWayTrip" 
@@ -57,10 +68,13 @@
 
         <TextView
             android:id="@+id/errorMessage"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="#FF0000"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tripTypeSelector"
             android:layout_marginBottom="8dp"/>
 
         <ProgressBar
@@ -69,27 +83,37 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/errorMessage"
             android:layout_marginBottom="8dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/carTypesList"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/progressBar"
+            app:layout_constraintBottom_toTopOf="@id/calculateFareButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="8dp"/>
 
         <Button
             android:id="@+id/calculateFareButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Calculate Fare"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/carTypesList"
             android:layout_marginBottom="8dp"/>
 
         <Button
             android:id="@+id/bookNowButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Book Now"/>
+            android:text="Book Now"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/calculateFareButton"/>
 
         <!-- Modal for Fare Details -->
         <FrameLayout
@@ -149,5 +173,5 @@
                     android:layout_marginTop="8dp"/>
             </LinearLayout>
         </FrameLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
