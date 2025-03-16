@@ -1,5 +1,6 @@
  package com.example.indicab
  
+<<<<<<< HEAD
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,6 +55,92 @@ fun HomeScreen(
         }
     }
 }
+=======
+import android.app.Dialog
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.indicab.adapters.CarTypesAdapter
+import com.example.indicab.components.PlacesAutocomplete
+import com.example.indicab.components.EnhancedDateTimePicker
+import com.example.indicab.databinding.FareDetailsModalBinding
+import com.example.indicab.databinding.ActivityHomeScreenBinding
+import com.example.indicab.databinding.DateTimeSelectorDialogBinding
+import com.example.indicab.models.BookingRequest
+import com.example.indicab.models.CarType
+import com.example.indicab.models.LatLng
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import com.example.indicab.models.FareDetails
+import com.example.indicab.viewmodels.HomeViewModel
+import java.util.Date
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+ 
+ class HomeScreenActivity : AppCompatActivity() {
+ 
+     private lateinit var binding: ActivityHomeScreenBinding
+     private lateinit var viewModel: HomeViewModel
+      private lateinit var carTypesAdapter: CarTypesAdapter
+     
+     private var pickupLocation: Location? = null
+     private var dropLocation: Location? = null
+     private var selectedDate: Date = Date()
+     private var tripType: String = "ONE_WAY"
+     private var selectedCar: CarType? = null
+     private var fareDetails: FareDetails? = null
+     private var isPickup: Boolean = true
+     
+     private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+     private var dropLocation: Location? = null
+     private var selectedDate: Date = Date()
+     private var tripType: String = "ONE_WAY"
+     private var selectedCar: CarType? = null
+     private var fareDetails: FareDetails? = null
+     private var isPickup: Boolean = true
+ 
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         binding = ActivityHomeScreenBinding.inflate(layoutInflater)
+         setContentView(binding.root)
+         
+         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+         
+         checkLocationPermissions() // Check permissions at the start
+         setupUI()
+
+@@ ... @@
+     private var dropLocation: Location? = null
+     private var selectedDate: Date = Date()
+     private var tripType: String = "ONE_WAY"
+     private var selectedCar: CarType? = null
+     private var fareDetails: FareDetails? = null
+     private var isPickup: Boolean = true
+ 
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         binding = ActivityHomeScreenBinding.inflate(layoutInflater)
+         setContentView(binding.root)
+         
+         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+         
+         setupUI()
+         setupObservers()
+         loadCarTypes()
+     }
+>>>>>>> d300c9508bbed111c41ee0eecde6f5b2034faaa2
      
      private fun setupUI() {
          // Initialize car types recycler view
@@ -100,7 +187,27 @@ fun HomeScreen(
          updateButtonStates()
      }
      
-     private fun setupObservers() {
+     private fun checkLocationPermissions() {
+         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+         } else {
+             // Permissions granted; proceed with location-based functionality
+         }
+     }
+
+     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+         when (requestCode) {
+             LOCATION_PERMISSION_REQUEST_CODE -> {
+                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                     // Permission granted; proceed with location-based functionality
+                 } else {
+                     Toast.makeText(this, Constants.LOCATION_PERMISSION_DENIED, Toast.LENGTH_SHORT).show()
+                 }
+                 return
+             }
+         }
+     }
+
          viewModel.loading.observe(this) { isLoading ->
              binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
              updateButtonStates()
