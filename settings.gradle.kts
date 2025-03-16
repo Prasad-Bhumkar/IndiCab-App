@@ -18,7 +18,12 @@ dependencyResolutionManagement {
     }
 }
 
+<<<<<<< HEAD
+rootProject.name = "Indicab"
+include(":app")
+=======
 rootProject.name = "IndiCab" // Replace with your project name
 include(":app")
 // Add other modules below, e.g.:
 // include(":my-library-module")
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83

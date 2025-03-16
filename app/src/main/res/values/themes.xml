@@ -1,8 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.IndiCab" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorPrimaryContainer">@color/primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/onPrimaryContainer</item>
+        
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
+        <item name="colorSecondaryContainer">@color/secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/onSecondaryContainer</item>
+        
+        <!-- Surface colors -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/onSurfaceVariant</item>
+        
+        <!-- Background colors -->
+        <item name="colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        
+        <!-- Error colors -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/onError</item>
+        <item name="colorErrorContainer">@color/errorContainer</item>
+        <item name="colorOnErrorContainer">@color/onErrorContainer</item>
+        
+        <!-- Typography -->
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.IndiCab.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.IndiCab.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.IndiCab.BodySmall</item>
+        
+        <!-- Shape -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.IndiCab.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.IndiCab.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.IndiCab.LargeComponent</item>
+        
+        <!-- Elevation -->
+        <item name="elevationLevel1">1dp</item>
+        <item name="elevationLevel2">3dp</item>
+        <item name="elevationLevel3">6dp</item>
+        <item name="elevationLevel4">8dp</item>
+        <item name="elevationLevel5">12dp</item>
+    </style>
+
+    <!-- Text appearances -->
+    <style name="TextAppearance.IndiCab.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">16sp</item>
+        <item name="lineHeight">24sp</item>
+    </style>
+
+    <style name="TextAppearance.IndiCab.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">20sp</item>
+    </style>
+
+    <style name="TextAppearance.IndiCab.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">16sp</item>
+    </style>
+
+    <!-- Shape appearances -->
+    <style name="ShapeAppearance.IndiCab.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="ShapeAppearance.IndiCab.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ShapeAppearance.IndiCab.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+=======
 <resources>
     <style name="Theme.IndiCab" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
 </resources>
