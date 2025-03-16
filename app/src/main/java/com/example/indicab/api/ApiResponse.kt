@@ -1,12 +1,3 @@
-<<<<<<< HEAD
- package com.example.indicab.api
- 
- data class ApiResponse<T>(
-     val success: Boolean,
-     val data: T?,
-     val error: String?
- ) 
-=======
 package com.example.indicab.api
 
 data class ApiResponse<T>(
@@ -19,4 +10,3 @@ data class ApiResponse<T>(
         return success && error == null
     }
 }
->>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83

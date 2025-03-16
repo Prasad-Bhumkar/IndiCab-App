@@ -33,7 +33,7 @@ androidxCore = "1.12.0"  # Added androidxCore version
 appcompat = "1.6.1"  # Added appcompat version
 androidxJunit = "1.1.3"  # Added androidxJunit version
 espressoCore = "3.5.1"  # Added espressoCore version
-androidGradlePlugin = "8.2.1"  # Added androidGradlePlugin version
+androidGradlePlugin = "8.9.0"  # Added androidGradlePlugin version
 
 [libraries]
 # Firebase
