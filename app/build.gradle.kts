@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -78,7 +79,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-tls:4.12.0")
 
-    // Image Loading
+    // Payment SDK
+    implementation("com.example.paymentgateway:payment-sdk:1.0.0")
+
+    // Testing
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
     androidTestImplementation("androidx.compose.ui:ui-test-manifest:1.5.4")
     androidTestImplementation("androidx.navigation:navigation-testing:2.7.5")

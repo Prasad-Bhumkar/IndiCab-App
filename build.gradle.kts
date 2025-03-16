@@ -8,9 +8,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
 }
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     // Add your dependencies here
