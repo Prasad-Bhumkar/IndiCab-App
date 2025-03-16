@@ -1,6 +1,5 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 plugins {
+<<<<<<< HEAD
     // Define plugins that can be applied to modules
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
@@ -8,13 +7,21 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.51" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.3" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
+=======
+    kotlin("jvm") version "1.8.0"
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
 }
 
-buildscript {
-    // Dependencies required by the build script itself
-    dependencies {
-        classpath("com.google.gms:google-services:4.4.1")
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Add your dependencies here
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8" // Set to a supported version
     }
 }
-
-

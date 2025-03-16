@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  code// Load local.properties file for sensitive information like API keys
 import java.util.Properties
 
@@ -11,65 +12,57 @@ if (!localPropertiesFile.exists()) {
 
 localProperties.load(localPropertiesFile.inputStream())
 
+=======
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
 plugins {
-    // Apply necessary plugins for Android and Kotlin
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+<<<<<<< HEAD
     id("com.google.gms.google-services")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+=======
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("dagger.hilt.android.plugin") // Hilt plugin
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
 }
 
 android {
-    // Set namespace for the application
-    namespace = "com.example.indicab"
-
-    // Compile SDK version
     compileSdk = 34
 
     defaultConfig {
-        // Use MAPS_API_KEY from local.properties if available
-        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
-
-        // Application ID
         applicationId = "com.example.indicab"
-
-        // Minimum and target SDK versions
-        minSdk = 24
+        minSdk = 21
         targetSdk = 34
-
-        // Version code and name
         versionCode = 1
         versionName = "1.0"
-
-        // Test instrumentation runner
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        kotlinOptions {
+                jvmTarget = "11" // Set Kotlin JVM target to 11
+
+        }
     }
 
     buildTypes {
         release {
+<<<<<<< HEAD
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+=======
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
         }
-    }
-
-    // Compile options for Java compatibility
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    // Kotlin options to match Java version
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
 dependencies {
+<<<<<<< HEAD
     // Hilt dependencies
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
@@ -116,4 +109,12 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-manifest:1.5.4")
     androidTestImplementation("androidx.navigation:navigation-testing:2.7.5")
     androidTestImplementation("io.mockk:mockk-android:1.13.8")
+=======
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-compiler:2.44")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0") // Add Kotlin standard library
+
+    implementation("com.example.paymentgateway:payment-sdk:1.0.0") // Payment SDK dependency
+    implementation("com.squareup.okhttp3:okhttp:4.9.1") // Example security library
+>>>>>>> 81ec31f166cdb0573d5c5135fcdecb0f6ba49d83
 }

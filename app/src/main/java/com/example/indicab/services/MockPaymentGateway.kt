@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
+import android.util.Log
 
 @Singleton
 class MockPaymentGateway @Inject constructor() : PaymentGateway {
@@ -18,6 +19,7 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
 
         // Simulate random failures
         if (Random.nextDouble() < failureRate) {
+            Log.e("MockPaymentGateway", "Payment failed for userId=${request.userId}, bookingId=${request.bookingId}: Payment failed due to technical issues")
             return createFailureResponse(
                 amount = request.amount,
                 currency = request.currency,
@@ -30,6 +32,7 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
         if (request.paymentMethod.type in listOf(PaymentMethodType.CREDIT_CARD, PaymentMethodType.DEBIT_CARD)) {
             val isValid = validateCard(request.paymentMethod.details)
             if (!isValid) {
+                Log.e("MockPaymentGateway", "Invalid card details for userId=${request.userId}, bookingId=${request.bookingId}")
                 return createFailureResponse(
                     amount = request.amount,
                     currency = request.currency,
@@ -51,6 +54,7 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
 
         // Store transaction for future reference
         transactionStore[response.transactionId!!] = response
+        Log.d("MockPaymentGateway", "Payment processed successfully for userId=${request.userId}, transactionId=${response.transactionId}")
         return response
     }
 
@@ -64,6 +68,7 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
         // Check if original transaction exists
         val originalTransaction = transactionStore[originalTransactionId]
         if (originalTransaction == null) {
+            Log.e("MockPaymentGateway", "Refund failed: Original transaction not found for transactionId=$originalTransactionId")
             return createFailureResponse(
                 amount = amount,
                 currency = "INR",
@@ -74,6 +79,7 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
 
         // Validate refund amount
         if (amount > originalTransaction.amount) {
+            Log.e("MockPaymentGateway", "Refund failed: Invalid refund amount for transactionId=$originalTransactionId, attemptedAmount=$amount")
             return createFailureResponse(
                 amount = amount,
                 currency = originalTransaction.currency,
@@ -94,6 +100,7 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
 
         // Store refund transaction
         transactionStore[response.transactionId!!] = response
+        Log.d("MockPaymentGateway", "Refund processed successfully for transactionId=$originalTransactionId")
         return response
     }
 
@@ -101,12 +108,15 @@ class MockPaymentGateway @Inject constructor() : PaymentGateway {
         // Simulate network delay
         delay(Random.nextLong(200, 1000))
 
-        return transactionStore[transactionId] ?: createFailureResponse(
-            amount = 0.0,
-            currency = "INR",
-            errorCode = "TRANSACTION_NOT_FOUND",
-            errorMessage = "Transaction not found"
-        )
+        return transactionStore[transactionId] ?: run {
+            Log.e("MockPaymentGateway", "Transaction not found for transactionId=$transactionId")
+            createFailureResponse(
+                amount = 0.0,
+                currency = "INR",
+                errorCode = "TRANSACTION_NOT_FOUND",
+                errorMessage = "Transaction not found"
+            )
+        }
     }
 
     private fun validateCard(details: PaymentMethodDetails): Boolean {
