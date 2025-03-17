@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.android") version "1.7.3" // Specify Kotlin version
     id("com.google.gms.google-services")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
@@ -20,7 +20,7 @@ android {
         buildConfigField("String", "MAPS_API_KEY", "\"${project.findProperty("MAPS_API_KEY")}\"")
 
         kotlinOptions {
-            jvmTarget = "17" // Set Kotlin JVM target to 17
+            jvmTarget = "1.8" // Set Kotlin JVM target to 1.8
         }
     }
 
@@ -36,11 +36,9 @@ android {
 
     buildTypes {
         release {
-            // Note: isMinifyEnabled and isShrinkResources are deprecated in Gradle 9.0
-            // These properties will be automatically handled by the Android Gradle Plugin
-            // No action required until upgrading to Gradle 9.0 or higher
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = true 
+            isShrinkResources = true 
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -51,8 +49,8 @@ android {
 
 dependencies {
     // Hilt dependencies
-    implementation("com.google.dagger:hilt-android:2.55")
-    kapt("com.google.dagger:hilt-android-compiler:2.55")
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Material design components
@@ -89,7 +87,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
-    implementation("com.squareup.okhttp3:okhttp-tls:4.11.0")
 
     // Image Loading
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")

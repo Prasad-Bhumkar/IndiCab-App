@@ -1,14 +1,3 @@
-
-import dagger.hilt.android.HiltAndroidApp
-
-@HiltAndroidApp
-class IndiCabApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        // Initialize any necessary components here
-    }
-}
-
 package com.example.indicab
 
 import android.app.Application
@@ -51,15 +40,5 @@ class IndiCabApplication : Application() {
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
         crashReporter.logMessage("Trim memory event received: level $level")
-    }
-}
-
-import dagger.hilt.android.HiltAndroidApp
-
-@HiltAndroidApp
-class IndiCabApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        // Initialize any necessary components here
     }
 }

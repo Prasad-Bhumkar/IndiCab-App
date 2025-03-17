@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.lifecycleScope
 import com.example.indicab.navigation.NavigationSetup
+import com.example.indicab.utils.ErrorLogger
 import com.example.indicab.state.ActivityStateHolder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
