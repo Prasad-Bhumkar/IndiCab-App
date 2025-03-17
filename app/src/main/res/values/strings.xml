@@ -1,22 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IndiCab</string>
-    
-    <!-- Home Screen -->
+
     <string name="pickup_location_hint">Enter pickup location</string>
     <string name="drop_location_hint">Enter drop location</string>
     <string name="book_ride">Book Ride</string>
-    
-    <!-- Booking Screen -->
+    <string name="current_location">Current Location</string>
+    <string name="destination">Destination</string>
+    <string name="recenter_map">Recenter Map</string>
+
     <string name="select_car_type">Select Car Type</string>
     <string name="confirm_booking">Confirm Booking</string>
     <string name="total_fare">Total Fare</string>
-    
-    <!-- Confirmation Screen -->
+    <string name="base_fare">Base Fare:</string>
+    <string name="distance_fare">Distance Fare:</string>
+    <string name="tax">Tax:</string>
+    <string name="currency_inr">₹</string>
+    <string name="car_type_sedan">Sedan</string>
+    <string name="car_type_hatchback">Hatchback</string>
+    <string name="car_type_suv">SUV</string>
+    <string name="car_type_luxury">Luxury</string>
+    <string name="car_type_auto">Auto</string>
+
     <string name="booking_confirmed">Booking Confirmed!</string>
     <string name="booking_success_message">Your ride has been booked successfully. Driver details will be shared shortly.</string>
     <string name="back_to_home">Back to Home</string>
     <string name="booking_id">Booking ID</string>
     <string name="estimated_pickup">Estimated Pickup</string>
+    <string name="estimated_arrival">Estimated Arrival:</string>
     <string name="payment_method">Payment Method</string>
+
+    <string name="driver_name">Driver Name:</string>
+    <string name="driver_phone">Driver Phone:</string>
+    <string name="car_number">Car Number:</string>
+
+    <string name="payment_method_cash">Cash</string>
+    <string name="payment_method_upi">UPI</string>
+    <string name="payment_method_credit_card">Credit Card</string>
+    <string name="payment_method_debit_card">Debit Card</string>
+    <string name="payment_method_wallet">Wallet</string>
+
+    <string name="ride_status_pending">Pending</string>
+    <string name="ride_status_accepted">Accepted</string>
+    <string name="ride_status_arrived">Arrived</string>
+    <string name="ride_status_started">Started</string>
+    <string name="ride_status_completed">Completed</string>
+    <string name="ride_status_cancelled">Cancelled</string>
+
+    <string name="error_location_invalid">Invalid location. Please try again.</string>
+    <string name="error_no_cars_available">No cars available in your area.</string>
+    <string name="error_payment_failed">Payment failed. Please try again.</string>
+    <string name="error_network_connection">No network connection. Please check your internet connection.</string>
+    <string name="error_server_error">Server error. Please try again later.</string>
+    <string name="error_field_empty">Please fill all fields.</string>
+    <string name="error_permission_denied">Permission denied.</string>
+
+    <string name="content_description_map">Map view</string>
+    <string name="content_description_pickup_marker">Pickup location marker</string>
+    <string name="content_description_drop_marker">Drop location marker</string>
+    <string name="content_description_car_icon">Car icon</string>
+
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+
+    <string name="date_format">dd/MM/yyyy</string>
+    <string name="time_format">hh:mm a</string>
+
 </resources>

@@ -1,120 +1,60 @@
-# IndiCab - Ride Booking App
+<div align="center">
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![License](https://img.shields.io/badge/license-Proprietary-red)
-![Version](https://img.shields.io/badge/version-1.0.0-orange)
+# Hi 👋, I'm Prasad Bhumkar
 
-A simple and efficient ride-booking application built with Jetpack Compose and Google Maps integration. This app allows users to easily book rides, select car types, and navigate through a user-friendly interface.
+A passionate Java Full Stack Developer from Pune, India 🇮🇳
 
-## Table of Contents
-- [Features](#features)
-- [Setup](#setup)
-- [Project Structure](#project-structure)
-- [Tech Stack](#tech-stack)
-- [Booking Flow](#booking-flow)
-- [Dependencies](#dependencies)
-- [Building and Running](#building-and-running)
-- [Testing](#testing)
-- [Contribution Guidelines](#contribution-guidelines)
-- [License](#license)
+[![Profile views](https://komarev.com/ghpvc/?username=Prasad-Bhumkar&label=Profile%20views&color=0e75b6&style=flat)](https://github.com/Prasad-Bhumkar)
 
-## Features
+[![GitHub Stats](https://github-readme-stats.vercel.app/api?username=Prasad-Bhumkar&show_icons=true&theme=radical)](https://github.com/Prasad-Bhumkar)
 
-- **Interactive map** for location selection
-- **Car type selection** with pricing
-- **Booking confirmation system**
-- **Material3 design** with dark mode support
-- **User-friendly interface** for easy navigation
+[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=Prasad-Bhumkar&theme=radical)](https://github.com/Prasad-Bhumkar)
 
-## Setup
+[![GitHub Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=Prasad-Bhumkar&layout=compact&theme=radical)](https://github.com/Prasad-Bhumkar)
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/indicab.git
-   ```
-2. Navigate into the project directory:
-   ```bash
-   cd indicab
-   ```
-3. Add your Google Maps API key to `local.properties`:
-   ```properties
-   MAPS_API_KEY=your_api_key_here
-   ```
-4. Build and run the project:
-   ```bash
-   ./gradlew installDebug
-   ```
+</div>
 
-## Project Structure
+## 🚀 About Me
 
-```
-app/src/main/
-├── java/com/example/indicab/
-│   ├── screens/
-│   │   ├── SimpleHomeScreen.kt       # Main screen with map
-│   │   ├── SimpleBookingScreen.kt    # Car selection
-│   │   └── BookingConfirmationScreen.kt
-│   ├── navigation/
-│   │   └── SimpleNavigation.kt       # Navigation setup
-│   ├── ui/theme/
-│   │   └── Theme.kt                  # App theme
-│   ├── MainActivity.kt
-│   └── IndiCabApplication.kt
-└── res/
-    └── values/
-        ├── strings.xml               # Text resources
-        └── themes.xml               # Theme configuration
-```
+I'm a Full Stack Developer specializing in Java and modern web technologies. I'm passionate about building scalable applications and microservices architecture. Currently focused on expanding my full-stack capabilities with a strong interest in both front-end and back-end development.
 
-## Tech Stack
+## 💻 Tech Stack
 
-- **Kotlin**
-- **Jetpack Compose**
-- **Google Maps Compose**
-- **Material3 Design**
-- **Navigation Compose**
+### Languages & Frameworks
+[![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.java.com/)
+[![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://www.javascript.com/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://www.w3.org/html/)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://www.w3.org/Style/CSS/)
 
-## Booking Flow
+### Databases
+[![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
-1. Open app -> View map with location input
-2. Enter pickup/drop locations
-3. Select car type and view pricing
-4. Confirm booking
-5. View booking confirmation
+### Tools & Technologies
+[![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)](https://git-scm.com/)
 
-## Dependencies
+## 🎯 Featured Projects
 
-- **Android SDK 34**
-- **Kotlin 1.9.0**
-- **Compose BOM 2024.01.00**
-- **Google Maps Compose 4.3.0**
-- **Places SDK 3.3.0**
+### Portfolio Website
+Personal portfolio website built with modern web technologies.
+- **Tech Stack:** HTML5, CSS3, JavaScript
+- **Features:** Responsive design, project showcase, contact form
+- [View Repository](https://github.com/Prasad-Bhumkar/projects/tree/main/portfolio)
 
-## Building and Running
 
-The app requires minimum SDK version 24 (Android 7.0) and targets SDK version 34.
+## 📫 Connect With Me
 
-To build:
-```bash
-./gradlew assembleDebug
-```
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/prasad-bhumkar)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Prasad-Bhumkar)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:prasadbhumkar@gmail.com)
 
-To run:
-```bash
-./gradlew installDebug
-```
+---
 
-## Testing
+<div align="center">
 
-To run tests, execute:
-```bash
-./gradlew test
-```
+### Thanks for visiting! 👋
 
-## Contribution Guidelines
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
-
-## License
-
-This project is licensed under a proprietary license. All rights reserved. No part of this code may be copied, modified, or distributed without explicit permission from the author.
+</div>
