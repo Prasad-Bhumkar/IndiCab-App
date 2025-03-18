@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android") version "1.7.3" // Specify Kotlin version
+    id("org.jetbrains.kotlin.android") // Adding explicit Kotlin Android plugin
     id("com.google.gms.google-services")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
@@ -18,10 +18,17 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "MAPS_API_KEY", "\"${project.findProperty("MAPS_API_KEY")}\"")
+    }
 
-        kotlinOptions {
-            jvmTarget = "1.8" // Set Kotlin JVM target to 1.8
-        }
+    // Correctly placed compilation options
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    // Correctly placed Kotlin options
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     sourceSets {
@@ -48,9 +55,9 @@ android {
 }
 
 dependencies {
-    // Hilt dependencies
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    // Hilt dependencies - updated to more recent versions
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Material design components
@@ -89,6 +96,17 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // Image Loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Testing dependencies
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk:1.13.17")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    
+    // Android UI testing
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.8")
     androidTestImplementation("androidx.compose.ui:ui-test-manifest:1.7.8")
     androidTestImplementation("androidx.navigation:navigation-testing:2.8.9")
