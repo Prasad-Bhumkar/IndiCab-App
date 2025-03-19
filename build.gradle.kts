@@ -2,9 +2,9 @@ plugins {
     // Define plugins that can be applied to modules
     alias(libs.plugins.android.application) apply true
     alias(libs.plugins.kotlin.android) apply true
-    id("com.google.gms.google-services") version "4.4.1" apply false
-    id("com.google.dagger.hilt.android") version "2.55" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.23.4" apply false
+    id("com.google.gms.google-services") version "4.3.10" apply false
+    id("com.google.dagger.hilt.android") version "2.48" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.1" apply false
 }
 
 android {
@@ -26,6 +26,6 @@ dependencies {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "17" // Set to a supported version
+        jvmTarget = "1.8" // Set to a supported version
     }
 }

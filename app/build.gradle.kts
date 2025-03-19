@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android") // Adding explicit Kotlin Android plugin
     id("com.google.gms.google-services")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android") version "2.48"
 }
 
 android {
@@ -20,13 +20,11 @@ android {
         buildConfigField("String", "MAPS_API_KEY", "\"${project.findProperty("MAPS_API_KEY")}\"")
     }
 
-    // Correctly placed compilation options
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    // Correctly placed Kotlin options
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -56,8 +54,8 @@ android {
 
 dependencies {
     // Hilt dependencies - updated to more recent versions
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("com.google.dagger:hilt-android:2.55")
+    kapt("com.google.dagger:hilt-android-compiler:2.55")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Material design components
@@ -75,15 +73,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.libraries.places:places:3.3.0")
 
-    // Firebase
+    // Firebase - updated to latest versions
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-perf")
-    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics:21.2.0")
+    implementation("com.google.firebase:firebase-auth:22.0.0")
+    implementation("com.google.firebase:firebase-firestore:25.0.0")
+    implementation("com.google.firebase:firebase-storage:20.2.0")
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
+    implementation("com.google.firebase:firebase-crashlytics:18.2.0")
 
     // Coroutines for async programming
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
