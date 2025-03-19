@@ -1,61 +1,5 @@
  package com.example.indicab
  
-<<<<<<< HEAD
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.indicab.components.PlacesAutocomplete
-import com.example.indicab.components.EnhancedDateTimePicker
-import com.example.indicab.models.BookingRequest
-import com.example.indicab.models.CarType
-import com.example.indicab.models.FareDetails
-import com.example.indicab.viewmodels.HomeViewModel
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
- 
-class HomeScreenActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            IndiCabTheme {
-                HomeScreen()
-            }
-        }
-    }
-}
-
-@Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
-) {
-    val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
-    
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            // TODO: Add UI components
-        }
-    }
-}
-=======
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -140,7 +84,6 @@ import java.util.Locale
          setupObservers()
          loadCarTypes()
      }
->>>>>>> d300c9508bbed111c41ee0eecde6f5b2034faaa2
      
      private fun setupUI() {
          // Initialize car types recycler view
