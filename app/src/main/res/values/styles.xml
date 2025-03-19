@@ -3,5 +3,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:appearance">default</item>
+    </style>
+    <style name="Theme.IndiCab" parent="Theme.MyApplication">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:appearance">default</item>
     </style>
 </resources>
