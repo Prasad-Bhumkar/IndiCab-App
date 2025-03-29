@@ -54,8 +54,8 @@ android {
 
 dependencies {
     // Hilt dependencies - updated to more recent versions
-    implementation("com.google.dagger:hilt-android:2.55")
-    kapt("com.google.dagger:hilt-android-compiler:2.55")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Material design components
